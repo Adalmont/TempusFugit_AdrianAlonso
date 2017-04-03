@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.show_sql">true</property>
+        <property name="format_sql">true</property>
+        <property name="use_sql_comments">true</property>
+        <!-- Si ponemos esta propiedad nos crea las tablas de la base de datos -->
+        <!--<property name="hibernate.hbm2ddl.auto">create</property>-->
+        <!-- Pool de conexiones -->
+        <property name="hibernate.connection.pool_size">1</property>
+        <property name="hibernate.connection.datasource">java:comp/env/jdbc/tempusfugit</property>
+        
+        <mapping class="es.adrian.beans.Categoria"/>
+        <mapping class="es.adrian.beans.Ciudad"/>
+        <mapping class="es.adrian.beans.Horario"/>
+        <mapping class="es.adrian.beans.Mensaje"/>ss
+        <mapping class="es.adrian.beans.Multimedia"/>
+        <mapping class="es.adrian.beans.Oferta"/>
+        <mapping class="es.adrian.beans.Promocion"/>
+        <mapping class="es.adrian.beans.Servicio"/>
+        <mapping class="es.adrian.beans.Subcategoria"/>
+        <mapping class="es.adrian.beans.Usuario"/>
+  </session-factory>
+</hibernate-configuration>

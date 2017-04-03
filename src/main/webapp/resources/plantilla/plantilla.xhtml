@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Facelet Title</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="estilos.css"/>
+    </h:head>
+    <h:body>
+        <div class="container-fluid">
+            <div id="cabecera" class="col-lg-12 colorFondoAzul">
+                <div>
+                    <header>
+                        <div class="col-lg-3">
+                            <h:form>
+                                <h:commandLink action="vueltaIndex"><img src="#{request.contextPath}/resources/imagenes/LogoT.png"/></h:commandLink>
+                            </h:form>
+                        </div>
+                        <div class="col-lg-7 centrar">
+                            <h:form>
+                                <h:inputText id="buscador"/>
+                                <h:commandButton id="buscar" action="buscar" value="Buscar"/>
+                            </h:form>
+                        </div>
+                        <div class="col-lg-2">
+                            <h:outputText value="Login(proximamente)"/>
+                        </div>
+                    </header>
+                </div>
+            </div>
+            <div id="contenido" class="col-lg-12">
+                <ui:insert name="contenido">
+                    <p>Aqui debe aparecer el contenido propio de cada pagina</p>
+                </ui:insert>
+            </div>
+            <div id="pie" class="col-lg-12 colorFondoAzul">
+                <div>
+                    <div class="col-lg-6 centrar">
+                        <p>Sobre la Web(proximamente)</p>
+                    </div>
+                    <div class="col-lg-6 centrar">
+                        <p>Contactanos(proximamente)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </h:body>
+</html>
+
