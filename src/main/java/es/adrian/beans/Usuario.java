@@ -5,32 +5,43 @@
  */
 package es.adrian.beans;
 
+import es.adrian.dao.IGenericoDAO;
+import es.adrian.daofactory.DAOFactory;
 import java.io.Serializable;
+import java.util.ArrayList;
+import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.SessionScoped;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import org.hibernate.HibernateException;
+
 /**
  *
  * @author Adrian
  */
 @Entity
-@Table(name="Usuarios")
+@Table(name = "Usuarios")
+@ManagedBean(name = "usuario", eager = true)
+@SessionScoped
 public class Usuario implements Serializable {
+
     @Id
-    @Column(name="idUsuario")
-    @GeneratedValue
+    @Column(name = "idUsuario")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idUsuario;
     private String nombre;
     private String apellidos;
     private String clave;
     private String email;
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Ciudad ciudad;
+    //@ManyToOne(cascade = CascadeType.ALL)
+    //private Ciudad idCiudad;
+    private Integer idCiudad;
     private int saldo;
     private String tipo;
     private String avatar;
@@ -75,12 +86,19 @@ public class Usuario implements Serializable {
         this.email = email;
     }
 
-    public Ciudad getCiudad() {
-        return ciudad;
+
+    public int getIdCiudad() {
+        return idCiudad;
     }
 
+    /*public Ciudad getCiudad() {
+    return idCiudad;
+    }
     public void setCiudad(Ciudad ciudad) {
-        this.ciudad = ciudad;
+    this.idCiudad = ciudad;
+    }*/
+    public void setIdCiudad(int idCiudad) {
+        this.idCiudad = idCiudad;
     }
 
     public int getSaldo() {
@@ -106,5 +124,47 @@ public class Usuario implements Serializable {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
-    
+
+    public void logOut() {
+        this.apellidos = null;
+        this.avatar = null;
+        this.idCiudad = null;
+        this.clave = null;
+        this.email = null;
+        this.idUsuario = 0;
+        this.saldo = 0;
+        this.tipo = null;
+    }
+
+    public String addUsuario() {
+        String exito = null;
+        //try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            gdao.add(this);
+            //logUsuario();
+            exito = "true";
+        //} catch (HibernateException e) {
+        //    exito="false";
+        //    logOut();
+        //}
+        return exito;
+    }
+    public String logUsuario(){
+        String resultado ="false";
+        DAOFactory daof= DAOFactory.getDAOFactory();
+        IGenericoDAO gdao= daof.getGenericoDAO();
+        Usuario user= (Usuario)gdao.logIn(this.email, "Usuario");
+        if (user.email.equals(this.email) && user.clave.equals(this.clave)){
+            resultado = "true";
+            this.apellidos=user.apellidos;
+            this.nombre=user.nombre;
+            this.avatar=user.avatar;
+            this.idCiudad=user.idCiudad;
+            this.idUsuario=user.idUsuario;
+            this.saldo=user.saldo;
+            this.tipo=user.tipo;
+        }
+        return resultado;
+    }
 }

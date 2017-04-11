@@ -4,4 +4,42 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
 
+    <navigation-rule>
+        <from-view-id>/paginas/registro-login/registro.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>volver</from-action>
+            <to-view-id>/index.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{usuario.addUsuario()}</from-action>
+            <from-outcome>true</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{usuario.addUsuario()}</from-action>
+            <from-outcome>false</from-outcome>
+            <to-view-id>/paginas/registro-login/errorRegistro.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>aceptar</from-action>
+            <to-view-id>/paginas/registro-login/registroEx.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule> 
+    <navigation-rule>
+        <from-view-id>/paginas/registro-login/login.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>volver</from-action>
+            <to-view-id>/index.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{usuario.logUsuario()}</from-action>
+            <from-outcome>true</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{usuario.logUsuario()}</from-action>
+            <from-outcome>false</from-outcome>
+            <to-view-id>/paginas/registro-login/errorRegistro.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule> 
 </faces-config>

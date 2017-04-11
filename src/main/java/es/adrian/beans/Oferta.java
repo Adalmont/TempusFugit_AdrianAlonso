@@ -7,6 +7,7 @@ package es.adrian.beans;
 
 import java.io.Serializable;
 import java.sql.Date;
+import javax.faces.bean.ManagedBean;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -20,6 +21,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="ofertas")
+@ManagedBean
 public class Oferta implements Serializable {
     @Id
     @GeneratedValue

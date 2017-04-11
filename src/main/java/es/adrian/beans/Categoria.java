@@ -11,18 +11,20 @@ import javax.persistence.Id;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Table;
+import javax.faces.bean.ManagedBean;
 /**
  *
  * @author Adrian
  */
 @Entity
 @Table(name="categorias")
+@ManagedBean
 public class Categoria implements Serializable {
     @Id
     @GeneratedValue
     private int idCategoria;
     private String nombre;
-    private int idImagen;
+    private String imagen;
 
     public int getIdCategoria() {
         return idCategoria;
@@ -40,12 +42,13 @@ public class Categoria implements Serializable {
         this.nombre = nombre;
     }
 
-    public int getIdImagen() {
-        return idImagen;
+    public String getImagen() {
+        return imagen;
     }
 
-    public void setIdImagen(int idImagen) {
-        this.idImagen = idImagen;
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
+
     
 }

@@ -6,6 +6,7 @@
 package es.adrian.beans;
 
 import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -19,6 +20,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="subcategorias")
+@ManagedBean
 public class Subcategoria implements Serializable {
     @Id
     @GeneratedValue
@@ -26,7 +28,7 @@ public class Subcategoria implements Serializable {
     private String nombre;
     @ManyToOne(cascade = CascadeType.ALL)
     private Categoria categoria;
-    private int idImagen;
+    private String imagen;
 
     public int getIdSubcategoria() {
         return idSubcategoria;
@@ -52,13 +54,13 @@ public class Subcategoria implements Serializable {
         this.categoria = categoria;
     }
 
-
-    public int getIdImagen() {
-        return idImagen;
+    public String getImagen() {
+        return imagen;
     }
 
-    public void setIdImagen(int idImagen) {
-        this.idImagen = idImagen;
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
+
     
 }

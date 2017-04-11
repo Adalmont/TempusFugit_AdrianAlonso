@@ -8,13 +8,14 @@ package es.adrian.beans;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Time;
+import javax.faces.bean.ManagedBean;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -23,16 +24,16 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="horarios")
+@ManagedBean
 public class Horario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idHorario;
-    private String dia;
-    private Time horaInicio;
-    private Time horaFin;
+    private int horaInicio;
+    private int horaFin;
     private String estado;
-    @OneToOne(cascade = CascadeType.ALL)
-    private int idOferta;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Oferta oferta;
     private Date fecha;
 
     public int getIdHorario() {
@@ -43,29 +44,22 @@ public class Horario implements Serializable {
         this.idHorario = idHorario;
     }
 
-    public String getDia() {
-        return dia;
-    }
-
-    public void setDia(String dia) {
-        this.dia = dia;
-    }
-
-    public Time getHoraInicio() {
+    public int getHoraInicio() {
         return horaInicio;
     }
 
-    public void setHoraInicio(Time horaInicio) {
+    public void setHoraInicio(int horaInicio) {
         this.horaInicio = horaInicio;
     }
 
-    public Time getHoraFin() {
+    public int getHoraFin() {
         return horaFin;
     }
 
-    public void setHoraFin(Time horaFin) {
+    public void setHoraFin(int horaFin) {
         this.horaFin = horaFin;
     }
+
 
     public String getEstado() {
         return estado;
@@ -75,13 +69,14 @@ public class Horario implements Serializable {
         this.estado = estado;
     }
 
-    public int getIdOferta() {
-        return idOferta;
+    public Oferta getOferta() {
+        return oferta;
     }
 
-    public void setIdOferta(int idOferta) {
-        this.idOferta = idOferta;
+    public void setOferta(Oferta oferta) {
+        this.oferta = oferta;
     }
+
 
     public Date getFecha() {
         return fecha;

@@ -6,6 +6,7 @@
 package es.adrian.beans;
 
 import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Entity;
@@ -17,6 +18,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="promociones")
+@ManagedBean
 public class Promocion implements Serializable {
     @Id
     @GeneratedValue

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-configuration">
 <hibernate-configuration>
-  <session-factory>
-    <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.show_sql">true</property>
         <property name="format_sql">true</property>
         <property name="use_sql_comments">true</property>
@@ -11,16 +11,18 @@
         <!-- Pool de conexiones -->
         <property name="hibernate.connection.pool_size">1</property>
         <property name="hibernate.connection.datasource">java:comp/env/jdbc/tempusfugit</property>
-        
+        <!--<property name="hibernate.connection.url">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.username">java2017</property>
+        <property name="hibernate.connection.password">2017</property>-->
         <mapping class="es.adrian.beans.Categoria"/>
         <mapping class="es.adrian.beans.Ciudad"/>
         <mapping class="es.adrian.beans.Horario"/>
-        <mapping class="es.adrian.beans.Mensaje"/>ss
+        <mapping class="es.adrian.beans.Mensaje"/>
         <mapping class="es.adrian.beans.Multimedia"/>
         <mapping class="es.adrian.beans.Oferta"/>
         <mapping class="es.adrian.beans.Promocion"/>
         <mapping class="es.adrian.beans.Servicio"/>
         <mapping class="es.adrian.beans.Subcategoria"/>
         <mapping class="es.adrian.beans.Usuario"/>
-  </session-factory>
+    </session-factory>
 </hibernate-configuration>

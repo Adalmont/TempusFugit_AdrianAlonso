@@ -2,9 +2,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Tempus Fugit</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
@@ -16,18 +17,25 @@
                 <div>
                     <header>
                         <div class="col-lg-3">
-                            <h:form>
-                                <h:commandLink action="vueltaIndex"><img src="#{request.contextPath}/resources/imagenes/LogoT.png"/></h:commandLink>
-                            </h:form>
+
                         </div>
                         <div class="col-lg-7 centrar">
-                            <h:form>
-                                <h:inputText id="buscador"/>
-                                <h:commandButton id="buscar" action="buscar" value="Buscar"/>
-                            </h:form>
+                            <img src="#{request.contextPath}/resources/imagenes/LogoT.png" width="240px" height="100px"/>
                         </div>
                         <div class="col-lg-2">
-                            <h:outputText value="Login(proximamente)"/>
+                            <div class="botonesCabecera">
+                                <c:choose>
+                                    <c:when  test="#{usuario.idUsuario!=0}">
+                                        <p class="colorAzulOscuro">Bienvenido, <h:outputText value="#{usuario.nombre}"/> </p>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <h:form>
+                                            <h:link value="Login" outcome="/paginas/registro-login/login.xhtml" class="btn btn-primary"/>  
+                                            <h:link value="Registro" outcome="/paginas/registro-login/registro.xhtml" class="btn btn-primary"/>
+                                        </h:form>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
                         </div>
                     </header>
                 </div>

@@ -6,6 +6,7 @@
 package es.adrian.beans;
 
 import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -19,6 +20,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="mensajes")
+@ManagedBean
 public class Mensaje implements Serializable {
     @Id
     @GeneratedValue

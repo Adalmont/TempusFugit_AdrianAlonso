@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/TempusFugitAdrianAlonso">
+<Context antiJARLocking="true" docBase="tempusfugit" path="/TempusFugitAdrianAlonso">
     <Resource auth="Container" 
               driverClassName="com.mysql.jdbc.Driver" 
               maxActive="100" 
@@ -8,6 +8,6 @@
               name="jdbc/tempusfugit" 
               password="2017" 
               type="javax.sql.DataSource" 
-              url="jdbc:mysql://localhost:3306/tempusfugit" 
+              url="jdbc:mysql://localhost:3306/tempusfugit?useSSL=false" 
               username="java2017"/>
 </Context>
