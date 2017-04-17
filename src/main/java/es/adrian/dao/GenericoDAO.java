@@ -1,6 +1,7 @@
 package es.adrian.dao;
 
 
+import es.adrian.beans.Usuario;
 import es.adrian.persistencia.HibernateUtil;
 import java.io.Serializable;
 
@@ -71,20 +72,6 @@ public class GenericoDAO<T> implements IGenericoDAO<T> {
         try {
             iniciaSesion();
             objetoRecuperado = sesion.get(claseEntidad, pk);
-        } catch(HibernateException he){
-            this.manejaExcepcion(he);
-        } finally {
-            this.cierraSesion();
-        }
-        
-        return objetoRecuperado;
-    }
-    
-    public <T> T logIn(String unique, String entidad){
-        T objetoRecuperado = null;
-        try {
-            iniciaSesion();
-            objetoRecuperado = (T)sesion.createQuery("from "+ entidad+" where email="+unique).uniqueResult();
         } catch(HibernateException he){
             this.manejaExcepcion(he);
         } finally {

@@ -23,11 +23,11 @@
                     <div class="col-lg-4">
                     <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarForm">
                         <h:outputLabel value="Nombre:"/>
-                        <h:inputText id="nombre" value="#{usuario.nombre}" pt:placeholder="Nombre" required="true"/>
+                        <h:inputText id="nombre" value="#{usuario.nombre}" pt:placeholder="Nombre" pt:pattern="^[a-zA-Z]+$" required="true"/>
                         <h:outputLabel value="Apellidos:"/>
-                        <h:inputText id="apellidos" value="#{usuario.apellidos}" pt:placeholder="Apellidos" required="true"/>
+                        <h:inputText id="apellidos" value="#{usuario.apellidos}" pt:placeholder="Apellidos" pt:pattern="^[a-zA-Z]+$" required="true"/>
                         <h:outputLabel value="Email: "/>
-                        <h:inputText id="email" value="#{usuario.email}" pt:placeholder="Email"/>
+                        <h:inputText id="email" value="#{usuario.email}" pt:placeholder="Email" pt:type="email"/>
                         <h:outputLabel value="Contraseña:"/>
                         <h:inputSecret id="clave" value="#{usuario.clave}"/>
                     </h:panelGrid>

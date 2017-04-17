@@ -12,27 +12,48 @@
         <h:outputStylesheet library="css" name="estilos.css"/>
     </h:head>
     <h:body>
+        <script>
+            /*
+             * Esta funcion es necesaria para que los dropdown funcionen al hacer click en ellos
+             */
+            $(document).ready(function () {
+                $('.dropdown-submenu a.test').on("click", function (e) {
+                    $(this).next('ul').toggle();
+                    e.stopPropagation();
+                    e.preventDefault();
+                });
+            });
+
+        </script>
         <div class="container-fluid">
             <div id="cabecera" class="col-lg-12 colorFondoAzul">
                 <div>
                     <header>
-                        <div class="col-lg-3">
+                        <div class="col-lg-4">
 
                         </div>
-                        <div class="col-lg-7 centrar">
-                            <img src="#{request.contextPath}/resources/imagenes/LogoT.png" width="240px" height="100px"/>
+                        <div class="col-lg-4 centrar">
+                            <h:link outcome="/index.xhtml"><img src="#{request.contextPath}/resources/imagenes/LogoT.png" width="240px" height="100px"/></h:link>
                         </div>
-                        <div class="col-lg-2">
-                            <div class="botonesCabecera">
+                        <div class="col-lg-4">
+                            <div class="botonesCabecera centrar">
                                 <c:choose>
                                     <c:when  test="#{usuario.idUsuario!=0}">
-                                        <p class="colorAzulOscuro">Bienvenido, <h:outputText value="#{usuario.nombre}"/> </p>
+                                        <div class="dropdown">
+                                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Menu <span class="caret"></span></button>
+                                            <ul class="dropdown-menu">
+                                                <li><h:link value="Perfil" outcome="/paginas/perfilUsuario/perfil.xhtml"/></li>
+                                            </ul>
+                                        </div>
                                     </c:when>
                                     <c:otherwise>
-                                        <h:form>
-                                            <h:link value="Login" outcome="/paginas/registro-login/login.xhtml" class="btn btn-primary"/>  
-                                            <h:link value="Registro" outcome="/paginas/registro-login/registro.xhtml" class="btn btn-primary"/>
-                                        </h:form>
+                                        <div class="dropdown">
+                                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Login/Registro <span class="caret"/></button>
+                                            <ul class="dropdown-menu">
+                                                <li><h:link value="Login" outcome="/paginas/registro-login/login.xhtml"/></li>  
+                                                <li><h:link value="Registro" outcome="/paginas/registro-login/registro.xhtml"/></li>
+                                            </ul>
+                                        </div>
                                     </c:otherwise>
                                 </c:choose>
                             </div>

@@ -10,9 +10,12 @@
 .colorAzulOscuro{
     color: #383875;
 }
+.colorRojo{
+    color: red;
+}
 .centrarForm{
     margin-left: 20%;
 }
 .botonesCabecera{
-    margin-top: 20%;
+    margin-top: 10%;
 }

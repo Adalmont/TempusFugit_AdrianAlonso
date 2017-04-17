@@ -9,8 +9,9 @@ import es.adrian.dao.IGenericoDAO;
 import es.adrian.daofactory.DAOFactory;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import javax.faces.bean.ManagedBean;
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.SessionScoped;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -19,6 +20,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import org.hibernate.HibernateException;
 
 /**
@@ -45,6 +47,8 @@ public class Usuario implements Serializable {
     private int saldo;
     private String tipo;
     private String avatar;
+    @Transient
+    private String mensaje;
 
     public int getIdUsuario() {
         return idUsuario;
@@ -86,7 +90,6 @@ public class Usuario implements Serializable {
         this.email = email;
     }
 
-
     public int getIdCiudad() {
         return idCiudad;
     }
@@ -125,7 +128,15 @@ public class Usuario implements Serializable {
         this.avatar = avatar;
     }
 
-    public void logOut() {
+    public String getMensaje() {
+        return mensaje;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
+
+    public void limpiarDatos() {
         this.apellidos = null;
         this.avatar = null;
         this.idCiudad = null;
@@ -134,36 +145,56 @@ public class Usuario implements Serializable {
         this.idUsuario = 0;
         this.saldo = 0;
         this.tipo = null;
+        this.mensaje=null;
     }
-
+    
+    public String logOut(){
+        limpiarDatos();
+        return "true";
+    }
+    
     public String addUsuario() {
         String exito = null;
-        //try {
-            DAOFactory daof = DAOFactory.getDAOFactory();
-            IGenericoDAO gdao = daof.getGenericoDAO();
-            gdao.add(this);
-            //logUsuario();
-            exito = "true";
-        //} catch (HibernateException e) {
-        //    exito="false";
-        //    logOut();
-        //}
+        try {
+        DAOFactory daof = DAOFactory.getDAOFactory();
+        IGenericoDAO gdao = daof.getGenericoDAO();
+        gdao.add(this);
+        logUsuario();
+        exito = "true";
+        } catch (HibernateException e) {
+            exito="false";
+            limpiarDatos();
+        }
         return exito;
     }
-    public String logUsuario(){
-        String resultado ="false";
-        DAOFactory daof= DAOFactory.getDAOFactory();
-        IGenericoDAO gdao= daof.getGenericoDAO();
-        Usuario user= (Usuario)gdao.logIn(this.email, "Usuario");
-        if (user.email.equals(this.email) && user.clave.equals(this.clave)){
-            resultado = "true";
-            this.apellidos=user.apellidos;
-            this.nombre=user.nombre;
-            this.avatar=user.avatar;
-            this.idCiudad=user.idCiudad;
-            this.idUsuario=user.idUsuario;
-            this.saldo=user.saldo;
-            this.tipo=user.tipo;
+
+    public String logUsuario() {
+        String resultado = "false";
+        DAOFactory daof = DAOFactory.getDAOFactory();
+        IGenericoDAO gdao = daof.getGenericoDAO();
+        List<Usuario> usuarios = gdao.get("Usuario");
+        for (Usuario user : usuarios) {
+            if (user.email.equals(this.email)) {
+                if (user.clave.equals(this.clave)) {
+                    this.apellidos = user.apellidos;
+                    this.nombre = user.nombre;
+                    this.avatar = user.avatar;
+                    this.idCiudad = user.idCiudad;
+                    this.idUsuario = user.idUsuario;
+                    this.saldo = user.saldo;
+                    this.tipo = user.tipo;
+                    this.mensaje=null;
+                    resultado = "true";
+                }else{
+                    resultado="claveIncorrecta";
+                    limpiarDatos(); 
+                    this.mensaje="Contraseña incorrecta";
+                }
+            }
+        }
+        if(resultado.equals("false")){
+            limpiarDatos();
+            this.mensaje="El email introducido es incorrecto";
         }
         return resultado;
     }
