@@ -24,8 +24,8 @@ public class Ciudad implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idCiudad;
-    private int nombre;
-    private int estado;
+    private String nombre;
+    private String estado;
     private double latitud;
     private double longitud;
 
@@ -37,19 +37,19 @@ public class Ciudad implements Serializable{
         this.idCiudad = idCiudad;
     }
 
-    public int getNombre() {
+    public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(int nombre) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
-    public int getEstado() {
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(int estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
 

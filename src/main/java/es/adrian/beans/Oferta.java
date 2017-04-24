@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 /**
@@ -29,8 +30,10 @@ public class Oferta implements Serializable {
     private String nombre;
     private String descripcion;
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idSubcategoria")
     private Subcategoria subcategoria;
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="idUsuario")
     private Usuario usuario;
     private Date fechaInicio;
     private Date fechaFin;

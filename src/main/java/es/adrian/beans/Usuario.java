@@ -9,6 +9,8 @@ import es.adrian.dao.IGenericoDAO;
 import es.adrian.daofactory.DAOFactory;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -18,6 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -41,9 +44,10 @@ public class Usuario implements Serializable {
     private String apellidos;
     private String clave;
     private String email;
-    //@ManyToOne(cascade = CascadeType.ALL)
-    //private Ciudad idCiudad;
-    private Integer idCiudad;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name= "idCiudad")
+    private Ciudad ciudad;
+    //private Integer ciudad;
     private int saldo;
     private String tipo;
     private String avatar;
@@ -90,19 +94,19 @@ public class Usuario implements Serializable {
         this.email = email;
     }
 
-    public int getIdCiudad() {
-        return idCiudad;
-    }
+    /*public int getIdCiudad() {
+        return ciudad;
+    }*/
 
-    /*public Ciudad getCiudad() {
-    return idCiudad;
+    public Ciudad getCiudad() {
+    return ciudad;
     }
     public void setCiudad(Ciudad ciudad) {
-    this.idCiudad = ciudad;
-    }*/
-    public void setIdCiudad(int idCiudad) {
-        this.idCiudad = idCiudad;
+    this.ciudad = ciudad;
     }
+    /*public void setIdCiudad(int ciudad) {
+        this.ciudad = ciudad;
+    }*/
 
     public int getSaldo() {
         return saldo;
@@ -139,7 +143,7 @@ public class Usuario implements Serializable {
     public void limpiarDatos() {
         this.apellidos = null;
         this.avatar = null;
-        this.idCiudad = null;
+        this.ciudad = null;
         this.clave = null;
         this.email = null;
         this.idUsuario = 0;
@@ -158,12 +162,18 @@ public class Usuario implements Serializable {
         try {
         DAOFactory daof = DAOFactory.getDAOFactory();
         IGenericoDAO gdao = daof.getGenericoDAO();
+        if (this.ciudad==null){
+            this.ciudad = new Ciudad();
+            this.ciudad.setIdCiudad(1);
+            this.ciudad = (Ciudad)gdao.getOne(this.ciudad.getIdCiudad(), this.ciudad.getClass());
+        }
         gdao.add(this);
         logUsuario();
         exito = "true";
-        } catch (HibernateException e) {
+        } catch (HibernateException | NullPointerException e) {
             exito="false";
             limpiarDatos();
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, e);
         }
         return exito;
     }
@@ -179,7 +189,7 @@ public class Usuario implements Serializable {
                     this.apellidos = user.apellidos;
                     this.nombre = user.nombre;
                     this.avatar = user.avatar;
-                    this.idCiudad = user.idCiudad;
+                    this.ciudad = user.ciudad;
                     this.idUsuario = user.idUsuario;
                     this.saldo = user.saldo;
                     this.tipo = user.tipo;
