@@ -1,7 +1,6 @@
 package es.adrian.dao;
 
 
-import es.adrian.beans.Usuario;
 import es.adrian.persistencia.HibernateUtil;
 import java.io.Serializable;
 
@@ -9,6 +8,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 
 import org.hibernate.Session;
 import org.hibernate.TransactionException;
@@ -46,6 +46,7 @@ public class GenericoDAO<T> implements IGenericoDAO<T> {
             
         } catch (HibernateException he){
             manejaExcepcion(he);
+            Logger.getLogger(GenericoDAO.class.getName()).log(Level.SEVERE, null, he);
         } finally {
             cierraSesion();
         }
@@ -78,6 +79,27 @@ public class GenericoDAO<T> implements IGenericoDAO<T> {
             this.cierraSesion();
         }
         
+        return objetoRecuperado;
+    }
+    
+    @Override
+    public <T> T getUsuario(String email, String clave){
+        T objetoRecuperado=null;
+        try {
+            iniciaSesion();
+            String hql= "from Usuario as usuario where usuario.email = :usuarioEmail and usuario.clave = :usuarioClave";
+            Query query = sesion.createQuery(hql);
+            query.setParameter("usuarioEmail", email);
+            query.setParameter("usuarioClave", clave);
+            List <T> usuario = query.list();
+            if (!usuario.isEmpty()){
+            objetoRecuperado = usuario.get(0);
+            }
+        } catch(HibernateException he){
+            this.manejaExcepcion(he);
+        } finally {
+            this.cierraSesion();
+        }
         return objetoRecuperado;
     }
     

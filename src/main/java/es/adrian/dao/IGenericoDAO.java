@@ -11,5 +11,6 @@ public interface IGenericoDAO<T> {
     public <T> T getOne(Serializable pk, Class<T> claseEntidad);
     public void update(T objeto);
     public void delete(T objeto);
+    public <T> T getUsuario(String email, String clave);
     
 }

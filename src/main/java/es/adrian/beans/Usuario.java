@@ -45,14 +45,17 @@ public class Usuario implements Serializable {
     private String clave;
     private String email;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name= "idCiudad")
+    @JoinColumn(name = "idCiudad")
     private Ciudad ciudad;
-    //private Integer ciudad;
     private int saldo;
     private String tipo;
     private String avatar;
     @Transient
     private String mensaje;
+    @Transient
+    private String confirmarClave;
+    /*@Transient
+    private String nuevaClave;*/
 
     public int getIdUsuario() {
         return idUsuario;
@@ -94,19 +97,13 @@ public class Usuario implements Serializable {
         this.email = email;
     }
 
-    /*public int getIdCiudad() {
-        return ciudad;
-    }*/
-
     public Ciudad getCiudad() {
-    return ciudad;
+        return ciudad;
     }
+
     public void setCiudad(Ciudad ciudad) {
-    this.ciudad = ciudad;
-    }
-    /*public void setIdCiudad(int ciudad) {
         this.ciudad = ciudad;
-    }*/
+    }
 
     public int getSaldo() {
         return saldo;
@@ -140,7 +137,24 @@ public class Usuario implements Serializable {
         this.mensaje = mensaje;
     }
 
+    public String getConfirmarClave() {
+        return confirmarClave;
+    }
+
+    public void setConfirmarClave(String confirmarClave) {
+        this.confirmarClave = confirmarClave;
+    }
+
+    /*public String getNuevaClave() {
+        return nuevaClave;
+    }
+
+    public void setNuevaClave(String nuevaClave) {
+        this.nuevaClave = nuevaClave;
+    }*/
+
     public void limpiarDatos() {
+        this.nombre = null;
         this.apellidos = null;
         this.avatar = null;
         this.ciudad = null;
@@ -149,31 +163,39 @@ public class Usuario implements Serializable {
         this.idUsuario = 0;
         this.saldo = 0;
         this.tipo = null;
-        this.mensaje=null;
+        this.mensaje = null;
     }
-    
-    public String logOut(){
+
+    public String logOut() {
         limpiarDatos();
         return "true";
     }
-    
+
     public String addUsuario() {
         String exito = null;
-        try {
-        DAOFactory daof = DAOFactory.getDAOFactory();
-        IGenericoDAO gdao = daof.getGenericoDAO();
-        if (this.ciudad==null){
-            this.ciudad = new Ciudad();
-            this.ciudad.setIdCiudad(1);
-            this.ciudad = (Ciudad)gdao.getOne(this.ciudad.getIdCiudad(), this.ciudad.getClass());
-        }
-        gdao.add(this);
-        logUsuario();
-        exito = "true";
-        } catch (HibernateException | NullPointerException e) {
-            exito="false";
+        if (this.clave.equals(this.confirmarClave)) {
+            try {
+                DAOFactory daof = DAOFactory.getDAOFactory();
+                IGenericoDAO gdao = daof.getGenericoDAO();
+                if (this.ciudad == null) {
+                    this.ciudad = new Ciudad();
+                    this.ciudad.setIdCiudad(1);
+                    this.ciudad = (Ciudad) gdao.getOne(this.ciudad.getIdCiudad(), this.ciudad.getClass());
+                }
+                this.tipo = "n";
+                gdao.add(this);
+                logUsuario();
+                exito = "true";
+            } catch (HibernateException | NullPointerException e) {
+                exito = "false";
+                limpiarDatos();
+                this.mensaje = "Ha habido un error en el registro";
+                Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, e);
+            }
+        } else {
+            exito = "false";
             limpiarDatos();
-            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, e);
+            this.mensaje = "Las contraseñas no coinciden";
         }
         return exito;
     }
@@ -182,30 +204,38 @@ public class Usuario implements Serializable {
         String resultado = "false";
         DAOFactory daof = DAOFactory.getDAOFactory();
         IGenericoDAO gdao = daof.getGenericoDAO();
-        List<Usuario> usuarios = gdao.get("Usuario");
-        for (Usuario user : usuarios) {
-            if (user.email.equals(this.email)) {
-                if (user.clave.equals(this.clave)) {
-                    this.apellidos = user.apellidos;
-                    this.nombre = user.nombre;
-                    this.avatar = user.avatar;
-                    this.ciudad = user.ciudad;
-                    this.idUsuario = user.idUsuario;
-                    this.saldo = user.saldo;
-                    this.tipo = user.tipo;
-                    this.mensaje=null;
-                    resultado = "true";
-                }else{
-                    resultado="claveIncorrecta";
-                    limpiarDatos(); 
-                    this.mensaje="Contraseña incorrecta";
-                }
-            }
+        Usuario user = (Usuario) gdao.getUsuario(this.email, this.clave);
+        if (user != null) {
+            this.apellidos = user.apellidos;
+            this.nombre = user.nombre;
+            this.avatar = user.avatar;
+            this.ciudad = user.ciudad;
+            this.idUsuario = user.idUsuario;
+            this.saldo = user.saldo;
+            this.tipo = user.tipo;
+            this.confirmarClave = null;
+            this.mensaje = null;
+            resultado = "true";
         }
-        if(resultado.equals("false")){
+        if (resultado.equals("false")) {
             limpiarDatos();
-            this.mensaje="El email introducido es incorrecto";
+            this.mensaje = "Email o contraseña incorrectos";
         }
         return resultado;
     }
+    /*public String updateUsuario(){
+        try{
+            if (!this.confirmarClave.equals(this.clave)){
+                this.confirmarClave=null;
+                this.nuevaClave=null;
+                return "Contraseña incorrecta";
+            }else{
+                this.clave=this.nuevaClave;
+                DAOFactory daof = DAOFactory.getDAOFactory();
+                IGenericoDAO gdao = daof.getGenericoDAO();
+                gdao.update(gdao);
+            }
+        }catch(HibernateException he){
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
+        }*/
 }

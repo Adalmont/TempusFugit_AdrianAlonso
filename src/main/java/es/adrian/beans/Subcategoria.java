@@ -5,15 +5,22 @@
  */
 package es.adrian.beans;
 
+import es.adrian.dao.IGenericoDAO;
+import es.adrian.daofactory.DAOFactory;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.JoinColumn;
 import javax.persistence.Id;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import org.hibernate.HibernateException;
 /**
  *
  * @author Adrian
@@ -27,6 +34,7 @@ public class Subcategoria implements Serializable {
     private int idSubcategoria;
     private String nombre;
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idCategoria")
     private Categoria categoria;
     private String imagen;
 
@@ -61,6 +69,17 @@ public class Subcategoria implements Serializable {
     public void setImagen(String imagen) {
         this.imagen = imagen;
     }
-
+    
+    public ArrayList<Subcategoria> getSubcat(){
+        ArrayList<Subcategoria> listaSubcat = new ArrayList();
+        try{
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            listaSubcat = (ArrayList<Subcategoria>) gdao.get("Subcategoria");
+        }catch(HibernateException he){
+            Logger.getLogger(Subcategoria.class.getName()).log(Level.SEVERE, null, he);
+        }
+        return listaSubcat;
+    }
     
 }

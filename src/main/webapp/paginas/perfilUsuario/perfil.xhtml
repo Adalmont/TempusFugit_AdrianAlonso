@@ -2,17 +2,104 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
         <title>Facelet Title</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="estilos.css"/>    
     </h:head>
     <h:body>
+
         <ui:composition template="/resources/plantilla/plantilla.xhtml">
             <ui:define name="contenido">
+
                 <h1 class="centrar colorAzulOscuro">Perfil de #{usuario.nombre} #{usuario.apellidos}</h1>
-                <h:form class="centrar">
-                    <h:commandButton  class="btn btn-primary" value="Logout" action="#{usuario.logOut()}"/>
-                </h:form>
+                <h3 id="mensaje" class="centrar"></h3>
+                <div class="row col-lg-12 centrar hidden" id="oferta">
+
+                    <h3 class="colorRojo">#{oferta.mensaje}</h3>
+                    <h:form class="centrar">
+                        <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarTabla">
+                            <h:outputLabel value="Nombre: "/>
+                            <h:inputText value="#{oferta.nombre}" pt:placeholder="Nombre de la Oferta" pt:required="true"/>
+                            <h:outputLabel value="Descripción: "/>
+                            <h:inputText value="#{oferta.descripcion}" pt:placeholder="Descripcion de la Oferta" pt:required="true"/>
+                            <h:outputLabel value="Categoria: "/>
+                            <h:selectOneMenu value="#{oferta.subcategoria}">
+                                <c:forEach var="subc" items="#{subcategoria.subcat}">
+                                    <f:selectItem itemValue="#{oferta.subcategoria}" itemLabel="#{subc.nombre}"/>
+                                </c:forEach>
+                            </h:selectOneMenu>
+                            <h:outputLabel value="Fecha Inicio: "/>
+                            <h:inputText value="#{oferta.fechaInicio}" pt:pattern="(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}" pt:required="true">
+                                <f:convertDateTime pattern="dd-mm-yyyy"/>
+                            </h:inputText>
+                            <h:outputLabel value="Fecha Fin: "/>
+                            <h:inputText value="#{oferta.fechaFin}" pt:pattern="(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}" pt:required="true">
+                                <f:convertDateTime pattern="dd-mm-yyyy"/>
+                            </h:inputText>
+                            <h:commandButton class="centrarForm" value="Aceptar" action="#{oferta.addOferta()}"/>
+                        </h:panelGrid>
+                    </h:form>
+                </div>
+                <div class="row col-lg-12 centrar hidden" id="datos">
+                    <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarTabla">
+                        <h:outputLabel value="Nombre: "/><h:outputText value="#{usuario.nombre}"/>
+                        <h:outputLabel value="Apellidos: "/><h:outputText value="#{usuario.apellidos}"/>
+                        <h:outputLabel value="Email: "/><h:outputText value="#{usuario.email}"/>
+                        <h:outputLabel value="Ciudad de residencia: "/><h:outputText value="#{usuario.ciudad.nombre}"/>
+                        <h:outputLabel value="Saldo: "/><h:outputText value="#{usuario.saldo}"/>
+                    </h:panelGrid>
+                    <!--<h:form class="centrar">
+                    <div class="col-lg-4">
+                        <h3 id="mensaje" class="colorRojo centrar">{usuario.mensaje}</h3>
+                        <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarForm">
+                            <h:outputLabel value="Nuevo nombre:"/>
+                            <h:inputText id="nombre" value="{usuario.nombre}" pt:placeholder="Nombre" required="true"/>
+                            <h:outputLabel value="Nuevos Apellidos:"/>
+                            <h:inputText id="email" value="{usuario.email}"  pt:placeholder="Email" pt:type="email"/>
+                            <h:outputLabel value="Antigua Contraseña:"/>
+                            <h:inputSecret id="clave" value="{usuario.confirmarClave}"/>
+                            <h:outputLabel value="Nueva Contraseña:"/>
+                            <h:inputSecret id="confClave" value="{usuario.nuevaClave}"/>
+                        </h:panelGrid>
+                        <h:commandButton value="Aceptar">
+                            <f:ajax render="mensaje"/>
+                        </h:commandButton>
+                        <h:commandButton value="Volver" action="volver" immediate="true"/>
+                    </div>
+                </h:form>-->
+                </div>
+                <div class="row col-lg-12 centrar">
+                    <button id="botonDatos" class="btn btn-primary">Datos personales</button>
+                    <button id="botonOferta" class="btn btn-primary">Crear Oferta</button>
+                    <h:form>
+                        <h:commandButton  class="btn btn-primary" value="Desconectar" action="#{usuario.logOut()}"/>
+                    </h:form>
+                </div>
+                <script>
+                    $("#botonOferta").click(function () {
+                        if ($("#oferta").hasClass("hidden")) {
+                            if (!$("#datos").hasClass("hidden")) {
+                                $("#datos").addClass("hidden");
+                            }
+                            $("#oferta").removeClass("hidden");
+                        }
+                    });
+                    $("#botonDatos").click(function () {
+                        if ($("#datos").hasClass("hidden")) {
+                            if (!$("#oferta").hasClass("hidden")) {
+                                $("#oferta").addClass("hidden");
+                            }
+                            $("#datos").removeClass("hidden");
+                        }
+                    });
+                </script>
             </ui:define>
         </ui:composition>
     </h:body>
