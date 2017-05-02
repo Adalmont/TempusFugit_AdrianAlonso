@@ -23,11 +23,15 @@ CREATE TABLE IF NOT EXISTS `categorias` (
   `imagen` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idCategoria`),
   KEY `FK_categoria-imagen_idx` (`imagen`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla tempusfugit.categorias: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla tempusfugit.categorias: ~2 rows (aproximadamente)
 DELETE FROM `categorias`;
 /*!40000 ALTER TABLE `categorias` DISABLE KEYS */;
+INSERT INTO `categorias` (`idCategoria`, `nombre`, `imagen`) VALUES
+	(1, 'Construcción', 'imgEX'),
+	(2, 'Limpieza', 'imgEx'),
+	(3, 'Tecnología', 'imgEx');
 /*!40000 ALTER TABLE `categorias` ENABLE KEYS */;
 
 -- Volcando estructura para tabla tempusfugit.ciudades
@@ -40,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `ciudades` (
   PRIMARY KEY (`idCiudad`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla tempusfugit.ciudades: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla tempusfugit.ciudades: ~0 rows (aproximadamente)
 DELETE FROM `ciudades`;
 /*!40000 ALTER TABLE `ciudades` DISABLE KEYS */;
 INSERT INTO `ciudades` (`idCiudad`, `nombre`, `estado`, `latitud`, `longitud`) VALUES
@@ -171,11 +175,16 @@ CREATE TABLE IF NOT EXISTS `subcategorias` (
   KEY `FK_subcategoria-categoria_idx` (`idCategoria`),
   KEY `FK_subcategoria-imagen_idx` (`imagen`),
   CONSTRAINT `FK_subcategoria-categoria` FOREIGN KEY (`idCategoria`) REFERENCES `categorias` (`idCategoria`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla tempusfugit.subcategorias: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla tempusfugit.subcategorias: ~4 rows (aproximadamente)
 DELETE FROM `subcategorias`;
 /*!40000 ALTER TABLE `subcategorias` DISABLE KEYS */;
+INSERT INTO `subcategorias` (`idSubcategoria`, `nombre`, `idCategoria`, `imagen`) VALUES
+	(1, 'Reparación', 1, 'imgEx'),
+	(2, 'Limpieza del hogar', 2, 'imgEx'),
+	(3, 'Aparatos Electrónicos', 3, 'imgEx'),
+	(4, 'Instalaciónes Eléctricas', 1, 'imgEx');
 /*!40000 ALTER TABLE `subcategorias` ENABLE KEYS */;
 
 -- Volcando estructura para tabla tempusfugit.usuarios
@@ -194,16 +203,22 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   UNIQUE KEY `email` (`email`),
   KEY `FK_usuarios-ciudad_idx` (`idCiudad`),
   CONSTRAINT `FK_usuarios-ciudad` FOREIGN KEY (`idCiudad`) REFERENCES `ciudades` (`idCiudad`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla tempusfugit.usuarios: ~4 rows (aproximadamente)
+-- Volcando datos para la tabla tempusfugit.usuarios: ~9 rows (aproximadamente)
 DELETE FROM `usuarios`;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
 INSERT INTO `usuarios` (`idUsuario`, `nombre`, `apellidos`, `clave`, `email`, `idCiudad`, `saldo`, `tipo`, `fechaAlta`, `avatar`) VALUES
 	(7, 'prueba', 'prueba', 'prueba', 'prueba', NULL, 0, 'n', '2017-04-12 00:27:08', NULL),
 	(9, 'Prueba', 'Prueba', 'prueba', 'prueba@prueba.com', NULL, 0, 'n', '2017-04-18 00:48:57', NULL),
 	(11, 'Adrian', 'Alonso', 'adrian', 'Adrian@adrian', NULL, 0, 'n', '2017-04-18 16:30:09', NULL),
-	(13, 'Ahab', 'Old Thunder', 'mobydick', 'pequod@mail.com', 1, 0, 'n', '2017-04-25 00:57:12', NULL);
+	(13, 'Ahab', 'Old Thunder', 'mobydick', 'pequod@mail.com', 1, 0, 'n', '2017-04-25 00:57:12', NULL),
+	(17, 'PruebaContra', 'NoVaAFuncionar', 'seguroquenova', 'porprobar@total.dealgohayquemorir', 1, 0, 'n', '2017-04-25 18:05:16', NULL),
+	(18, 'PruebaContra', 'dfbdr', 'gergergerger', 'gererfer@fghtrhrt', 1, 0, 'n', '2017-04-25 18:14:50', NULL),
+	(19, 'PruebaContra', 'ffdvfvgbhg', 'rthrtbtr', 'rvrttrbrtb@vervrevervr', 1, 0, 'n', '2017-04-25 18:26:17', NULL),
+	(20, 'PruebaContra', 'ikukyukyu', 'tbrttrhrthrtht', 'kyukyukyuk@kyumyu', 1, 0, 'n', '2017-04-25 18:28:52', NULL),
+	(21, 'ewfwefwef', 'wefewfewf', 'sdvvevervreves', 'ewfwefwef3|2@vsdvs', 1, 0, 'n', '2017-04-25 18:33:03', NULL),
+	(22, 'Ludwig', 'van Beethoven', 'quintasinfonia', 'ludwig@mail.com', 1, 0, 'n', '2017-05-01 01:22:41', NULL);
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
