@@ -77,18 +77,20 @@ CREATE TABLE IF NOT EXISTS `mensajes` (
   `tipo` set('pu','pri') NOT NULL DEFAULT 'pu',
   `asunto` varchar(45) DEFAULT NULL,
   `contenido` varchar(200) NOT NULL,
-  `fecha` timestamp NULL DEFAULT NULL,
+  `fecha` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `leido` set('s','n') DEFAULT 'n',
   PRIMARY KEY (`idMensaje`),
   KEY `FK_emisor-usuario_idx` (`idEmisor`),
   KEY `FK_servicioReceptor_idx` (`idOferta`),
   CONSTRAINT `FK_emisor-usuario` FOREIGN KEY (`idEmisor`) REFERENCES `usuarios` (`idUsuario`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_servicioReceptor` FOREIGN KEY (`idOferta`) REFERENCES `ofertas` (`idOferta`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla tempusfugit.mensajes: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla tempusfugit.mensajes: ~1 rows (aproximadamente)
 DELETE FROM `mensajes`;
 /*!40000 ALTER TABLE `mensajes` DISABLE KEYS */;
+INSERT INTO `mensajes` (`idMensaje`, `idEmisor`, `idOferta`, `tipo`, `asunto`, `contenido`, `fecha`, `leido`) VALUES
+	(2, 23, 2, 'pu', 'gergerg', 'ergergerg', '2017-05-08 19:05:03', 'n');
 /*!40000 ALTER TABLE `mensajes` ENABLE KEYS */;
 
 -- Volcando estructura para tabla tempusfugit.multimedia
@@ -122,11 +124,17 @@ CREATE TABLE IF NOT EXISTS `ofertas` (
   KEY `FK_oferta-usuario_idx` (`idUsuario`),
   CONSTRAINT `FK_oferta-usuario` FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`idUsuario`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_servicio-subcategoria` FOREIGN KEY (`idSubcategoria`) REFERENCES `subcategorias` (`idSubcategoria`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla tempusfugit.ofertas: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla tempusfugit.ofertas: ~5 rows (aproximadamente)
 DELETE FROM `ofertas`;
 /*!40000 ALTER TABLE `ofertas` DISABLE KEYS */;
+INSERT INTO `ofertas` (`idOferta`, `nombre`, `descripcion`, `idSubcategoria`, `idUsuario`, `fechaInicio`, `fechaFin`, `estado`) VALUES
+	(2, 'Instalacion de red electrica', 'Me ofrezco ha instalar una red electrica domestica', 4, 22, '2017-01-07', '2017-01-10', 'a'),
+	(3, 'Reparacion de porches', 'Reparo porches de patios en viviendas', 1, 13, '2017-01-06', '2017-01-12', 'a'),
+	(4, 'Limpieza de Cañerias', 'Limpio cañerias obstruidas', 2, 23, '2017-01-08', '2017-01-10', 'a'),
+	(5, 'Instalación de cuadros eléctricos', 'Instalo, reviso y mantengo cuadros eléctricos en viviendas', 4, 23, '2017-01-06', '2017-01-18', 'a'),
+	(7, 'Reparacion de ordenadores', 'Reparo hardware de ordenadores, tanto de mesa como portatiles', 3, 23, '2017-01-19', '2017-01-01', 'a');
 /*!40000 ALTER TABLE `ofertas` ENABLE KEYS */;
 
 -- Volcando estructura para tabla tempusfugit.promocion
@@ -203,22 +211,15 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   UNIQUE KEY `email` (`email`),
   KEY `FK_usuarios-ciudad_idx` (`idCiudad`),
   CONSTRAINT `FK_usuarios-ciudad` FOREIGN KEY (`idCiudad`) REFERENCES `ciudades` (`idCiudad`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla tempusfugit.usuarios: ~9 rows (aproximadamente)
+-- Volcando datos para la tabla tempusfugit.usuarios: ~3 rows (aproximadamente)
 DELETE FROM `usuarios`;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
 INSERT INTO `usuarios` (`idUsuario`, `nombre`, `apellidos`, `clave`, `email`, `idCiudad`, `saldo`, `tipo`, `fechaAlta`, `avatar`) VALUES
-	(7, 'prueba', 'prueba', 'prueba', 'prueba', NULL, 0, 'n', '2017-04-12 00:27:08', NULL),
-	(9, 'Prueba', 'Prueba', 'prueba', 'prueba@prueba.com', NULL, 0, 'n', '2017-04-18 00:48:57', NULL),
-	(11, 'Adrian', 'Alonso', 'adrian', 'Adrian@adrian', NULL, 0, 'n', '2017-04-18 16:30:09', NULL),
 	(13, 'Ahab', 'Old Thunder', 'mobydick', 'pequod@mail.com', 1, 0, 'n', '2017-04-25 00:57:12', NULL),
-	(17, 'PruebaContra', 'NoVaAFuncionar', 'seguroquenova', 'porprobar@total.dealgohayquemorir', 1, 0, 'n', '2017-04-25 18:05:16', NULL),
-	(18, 'PruebaContra', 'dfbdr', 'gergergerger', 'gererfer@fghtrhrt', 1, 0, 'n', '2017-04-25 18:14:50', NULL),
-	(19, 'PruebaContra', 'ffdvfvgbhg', 'rthrtbtr', 'rvrttrbrtb@vervrevervr', 1, 0, 'n', '2017-04-25 18:26:17', NULL),
-	(20, 'PruebaContra', 'ikukyukyu', 'tbrttrhrthrtht', 'kyukyukyuk@kyumyu', 1, 0, 'n', '2017-04-25 18:28:52', NULL),
-	(21, 'ewfwefwef', 'wefewfewf', 'sdvvevervreves', 'ewfwefwef3|2@vsdvs', 1, 0, 'n', '2017-04-25 18:33:03', NULL),
-	(22, 'Ludwig', 'van Beethoven', 'quintasinfonia', 'ludwig@mail.com', 1, 0, 'n', '2017-05-01 01:22:41', NULL);
+	(22, 'Ludwig', 'van Beethoven', 'quintasinfonia', 'ludwig@mail.com', 1, 0, 'n', '2017-05-01 01:22:41', NULL),
+	(23, 'Dante', 'Alighieri', 'divinacomedia', 'dante@mail.com', 1, 0, 'n', '2017-05-07 19:00:12', NULL);
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
