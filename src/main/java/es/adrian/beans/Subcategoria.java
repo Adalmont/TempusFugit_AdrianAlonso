@@ -17,7 +17,9 @@ import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.Id;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.hibernate.HibernateException;
@@ -30,8 +32,8 @@ import org.hibernate.HibernateException;
 @ManagedBean
 public class Subcategoria implements Serializable {
     @Id
-    @GeneratedValue
-    private int idSubcategoria;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer idSubcategoria;
     private String nombre;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idCategoria")
@@ -69,17 +71,20 @@ public class Subcategoria implements Serializable {
     public void setImagen(String imagen) {
         this.imagen = imagen;
     }
-    
-    public ArrayList<Subcategoria> getSubcat(){
-        ArrayList<Subcategoria> listaSubcat = new ArrayList();
-        try{
-            DAOFactory daof = DAOFactory.getDAOFactory();
-            IGenericoDAO gdao = daof.getGenericoDAO();
-            listaSubcat = (ArrayList<Subcategoria>) gdao.get("Subcategoria");
-        }catch(HibernateException he){
-            Logger.getLogger(Subcategoria.class.getName()).log(Level.SEVERE, null, he);
-        }
-        return listaSubcat;
+    /*Para que funcionen los convertidores de JSF se necesita que la clase que se quiere convertir disponga de
+    metodos equals y hashcode definidos*/
+    @Override
+    public boolean equals(Object other) {
+        return (other != null && getClass() == other.getClass() && this.idSubcategoria != null)
+            ? this.idSubcategoria.equals(((Subcategoria) other).idSubcategoria)
+            : (other == this);
     }
-    
+
+    @Override
+    public int hashCode() {
+        return (this.idSubcategoria != null) 
+            ? (getClass().hashCode() + this.idSubcategoria.hashCode())
+            : super.hashCode();
+    }
+
 }

@@ -170,7 +170,7 @@ public class Usuario implements Serializable {
         limpiarDatos();
         return "true";
     }
-
+    /*Este metodo añade usuarios a la base de datos. si no se ha seleccionado ninguna ciudad, asigna una por defecto */
     public String addUsuario() {
         String exito = null;
         if (this.clave.equals(this.confirmarClave)) {
@@ -199,7 +199,7 @@ public class Usuario implements Serializable {
         }
         return exito;
     }
-
+    
     public String logUsuario() {
         String resultado = "false";
         DAOFactory daof = DAOFactory.getDAOFactory();

@@ -119,4 +119,25 @@ public class GenericoDAO<T> implements IGenericoDAO<T> {
             this.cierraSesion();
         }
     }
+
+    @Override
+    public <T> List<T> getMensajes(int idOferta) {
+        List<T> lista= null;
+        try{
+            iniciaSesion();
+            try{
+            String hql= "from Mensaje as mensaje where mensaje.idOferta = :ofertaId";
+            Query query = sesion.createQuery(hql);
+            query.setParameter("ofertaId", idOferta);
+            lista = query.list();
+            }catch(NullPointerException e){
+                lista=null;
+            }
+        }catch(HibernateException he){
+            this.manejaExcepcion(he);
+        }finally{
+            this.cierraSesion();
+        }
+        return lista;
+    }
 }

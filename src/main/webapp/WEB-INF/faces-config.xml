@@ -50,4 +50,17 @@
             <to-view-id>/paginas/perfilUsuario/perfil.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule> 
+    <navigation-rule>
+        <from-view-id>/paginas/ofertas/listaOfertas.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{oferta.elegirOferta(ofertaActual)}</from-action>
+            <from-outcome>true</from-outcome>
+            <to-view-id>/paginas/ofertas/ofertaIndividual.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{oferta.elegirOferta(ofertaActual)}</from-action>
+            <from-outcome>false</from-outcome>
+            <to-view-id>/paginas/ofertas/listaOfertas.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule> 
 </faces-config>

@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Table;
 import javax.faces.bean.ManagedBean;
+import javax.persistence.GenerationType;
 /**
  *
  * @author Adrian
@@ -21,7 +22,7 @@ import javax.faces.bean.ManagedBean;
 @ManagedBean
 public class Categoria implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idCategoria;
     private String nombre;
     private String imagen;

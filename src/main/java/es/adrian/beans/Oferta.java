@@ -29,7 +29,7 @@ import org.hibernate.HibernateException;
 public class Oferta implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idOferta;
     private String nombre;
     private String descripcion;
@@ -38,9 +38,11 @@ public class Oferta implements Serializable {
     private Subcategoria subcategoria;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idUsuario")
-    @ManagedProperty(value= "#{usuario}")
+    @ManagedProperty(value = "#{usuario}")
     private Usuario usuario;
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date fechaInicio;
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date fechaFin;
     private String estado;
     @Transient
@@ -134,25 +136,56 @@ public class Oferta implements Serializable {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
             IGenericoDAO gdao = daof.getGenericoDAO();
-            this.estado = "l";
+            this.estado = "a";
             gdao.add(this);
-            this.mensaje="Oferta creada";
+            limpiarDatos();
+            this.mensaje = "Oferta creada";
             return "true";
         } catch (HibernateException e) {
             Logger.getLogger(Oferta.class.getName()).log(Level.SEVERE, null, e);
             limpiarDatos();
-            this.mensaje="Error al crear la Oferta";
+            this.mensaje = "Error al crear la Oferta";
             return "false";
         }
     }
-    
-    public void limpiarDatos(){
-        this.idOferta=0;
-        this.descripcion=null;
-        this.estado=null;
-        this.nombre=null;
-        this.fechaFin=null;
-        this.fechaInicio=null;
-        this.subcategoria=null;
+    /*Este metodo devuelve un ArrayList de subcategorias, que utilizo para rellenar un Select en las paginas xhtml*/
+    public ArrayList<Subcategoria> getSubcat() {
+        ArrayList<Subcategoria> listaSubcat = new ArrayList();
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            listaSubcat = (ArrayList<Subcategoria>) gdao.get("Subcategoria");
+        } catch (HibernateException he) {
+            Logger.getLogger(Subcategoria.class.getName()).log(Level.SEVERE, null, he);
+        }
+        return listaSubcat;
     }
+    /*Este metodo recibe los datos de una oferta en la lista de ofertas y la pasa al bean para mostrarla en la pagina de
+    la oferta individual*/
+    public String elegirOferta(Oferta ofertaElegida) {
+        if (ofertaElegida != null) {
+            this.idOferta = ofertaElegida.idOferta;
+            this.descripcion = ofertaElegida.descripcion;
+            this.estado = ofertaElegida.estado;
+            this.nombre = ofertaElegida.nombre;
+            this.fechaFin = ofertaElegida.fechaFin;
+            this.fechaInicio = ofertaElegida.fechaInicio;
+            this.subcategoria = ofertaElegida.subcategoria;
+            this.usuario = ofertaElegida.usuario;
+            return "true";
+        } else {
+            return "false";
+        }
+    }
+
+    public void limpiarDatos() {
+        this.idOferta = 0;
+        this.descripcion = null;
+        this.estado = null;
+        this.nombre = null;
+        this.fechaFin = null;
+        this.fechaInicio = null;
+        this.subcategoria = null;
+    }
+
 }

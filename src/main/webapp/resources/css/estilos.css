@@ -4,6 +4,9 @@
 .colorFondoAzul{
     background-color: #8181a0;
 }
+.colorFondoAzulOscuro{
+    background-color: #383875; 
+}
 .colorAzul{
     color: #8181a0;
 }
@@ -13,12 +16,28 @@
 .colorRojo{
     color: red;
 }
+.navegacion{
+    height: 20px;
+}
 .centrarForm{
     margin-left: 20%;
+}
+.centrarFormMensaje{
+    margin-left:30%;
 }
 .centrarTabla{
     margin-left: 40%;
 }
 .botonesCabecera{
     margin-top: 10%;
+}
+.mensajeOferta{
+    font-size: 16px;
+}
+.mensajeLista{
+    margin-left: 20%;
+    margin-right: 20%;
+}
+.elementoMensaje{
+    border: solid;
 }

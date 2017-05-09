@@ -5,29 +5,34 @@
  */
 package es.adrian.beans;
 
+import es.adrian.dao.IGenericoDAO;
+import es.adrian.daofactory.DAOFactory;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.faces.bean.ManagedProperty;
+import javax.persistence.*;
+import org.hibernate.HibernateException;
+
 /**
  *
  * @author Adrian
  */
 @Entity
-@Table(name="mensajes")
+@Table(name = "mensajes")
 @ManagedBean
 public class Mensaje implements Serializable {
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idMensaje;
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idEmisor")
     private Usuario emisor;
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idOferta")
     private Oferta oferta;
     private String tipo;
     private String asunto;
@@ -89,5 +94,55 @@ public class Mensaje implements Serializable {
     public void setLeido(String leido) {
         this.leido = leido;
     }
-    
+
+    public String addMensaje(Oferta oferta, Usuario usuario) {
+        String exito = null;
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            this.oferta=oferta;
+            this.emisor = usuario;
+            this.leido = "n";
+            if (this.oferta == null) {
+                System.out.println("NULO ");
+            } else {
+                gdao.add(this);
+                limpiarDatos();
+                exito = "true";
+            }
+        } catch (HibernateException | NullPointerException e) {
+            System.out.println("NULO2 ");
+            Logger.getLogger(Mensaje.class.getName()).log(Level.SEVERE, null, e);
+            limpiarDatos();
+            exito = "false";
+        }
+        return exito;
+    }
+
+    public ArrayList<Mensaje> getMensajes(int idOferta) {
+        ArrayList<Mensaje> listaMensajes = new ArrayList();
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            listaMensajes = (ArrayList<Mensaje>) gdao.get("Mensaje");
+            if (listaMensajes.isEmpty()) {
+                listaMensajes = null;
+            }
+        } catch (HibernateException | NullPointerException e) {
+            Logger.getLogger(Mensaje.class.getName()).log(Level.SEVERE, null, e);
+            listaMensajes = null;
+        }
+        return listaMensajes;
+    }
+
+    public void limpiarDatos() {
+        this.asunto = null;
+        this.contenido = null;
+        this.emisor = null;
+        this.idMensaje = 0;
+        this.leido = null;
+        this.oferta = null;
+        this.tipo = null;
+    }
+
 }
