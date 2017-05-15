@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:of="http://omnifaces.org/functions">
+    <h:head>
+        <title>Facelet Title</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="estilos.css"/>   
+    </h:head>
+    <h:body>
+        <ui:composition template="/resources/plantilla/plantilla.xhtml">
+            <ui:define name="contenido">
+                <div class="col-lg-12 centrar">
+                    <h:form>
+                        <h:outputText value="Elige en que categoria quieres buscar"/>
+                        <h:selectOneMenu value="#{subcategoria.categoriaElegida}" converter="omnifaces.SelectItemsConverter">
+                            <f:ajax listener="#{subcategoria.recargarSubcat()}" render="elegirSubcat" />
+                            <f:selectItem value="#{null}" itemLabel="--Elige Categoria--"/>
+                            <f:selectItems value="#{categoria.cat}" var="cat" itemValue="#{cat}" itemLabel="#{cat.nombre}" />
+                        </h:selectOneMenu>
+                        <br/>
+                        <br/>
+                        <h:outputText value="Elige en que subcategoria quieres buscar"/>
+                        <h:selectOneMenu id="elegirSubcat" value="#{oferta.subcatBusqueda}" converter="omnifaces.SelectItemsConverter">
+                            <f:selectItem value="#{null}" itemLabel="--Elige Subcategoria--"/>
+                            <f:selectItems value="#{subcategoria.subcategoriasBusqueda}" var="subcat" itemValue="#{subcat}" itemLabel="#{subcat.nombre}" />
+                        </h:selectOneMenu>
+                        <br/>
+                        <br/>
+                        <h:commandButton class="btn btn-primary" value="Buscar" action="buscar"/>
+                    </h:form>
+                </div>
+                <div>
+                    <h1 class="centrar colorAzul">Resultados: </h1>
+                    <c:forEach var="ofertaActual" items="#{oferta.ofertas}">
+                        <c:choose>
+                            <c:when test="#{not empty ofertaActual}">
+                                <h:form>
+                                    <h:panelGrid columns="2" border="1" cellspacing="2" class="centrarTabla">
+                                        <h:outputLabel value="Ofertante: "/>
+                                        <h:outputText value="#{ofertaActual.usuario.nombre} #{ofertaActual.usuario.apellidos}"/>
+                                        <h:outputLabel value="Nombre: "/>
+                                        <h:outputText value="#{ofertaActual.nombre}"/>
+                                        <h:outputLabel value="Disponibilidad: "/>
+                                        <h:outputText value="desde #{ofertaActual.fechaInicio} hasta #{ofertaActual.fechaFin}"/>
+                                        <h:outputLabel value="Categoria: "/>
+                                        <h:outputText value="#{ofertaActual.subcategoria.categoria.nombre}: #{ofertaActual.subcategoria.nombre}"/>
+                                    </h:panelGrid>
+                                    <c:if test="#{usuario.idUsuario!=0 and usuario.idUsuario!=null}">
+                                        <h:commandButton class="centrarTabla" value="Seleccionar" action="#{oferta.elegirOferta(ofertaActual)}"/>
+                                    </c:if>
+                                </h:form>
+                            </c:when>
+                            <c:otherwise>
+                                <h:outputText value="No hay resultados"/>
+                            </c:otherwise>
+                        </c:choose>
+                        <br/>
+                    </c:forEach>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

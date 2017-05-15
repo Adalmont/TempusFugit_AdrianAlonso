@@ -62,7 +62,12 @@
                 </div>
             </div>
             <div id="navegacion" class="colorFondoAzulOscuro navegacion col-lg-12">
-                <h:link class="btn-primary" value="Lista de Ofertas" outcome="/paginas/ofertas/listaOfertas.xhtml"/>
+                <ul class="listaNav">
+                    <li class="navEl"><h:link class="btn-primary" value="Lista de Ofertas" outcome="/paginas/ofertas/listaOfertas.xhtml"/></li>
+                <c:if test="#{usuario.idUsuario!=null and usuario.idUsuario!=0}">
+                    <li class="navEl"><h:link class="btn-primary" value="Buscador de ofertas" outcome="/paginas/buscador/buscador.xhtml"/></li>
+                </c:if>
+                </ul>
             </div>
             <div id="contenido" class="col-lg-12">
                 <ui:insert name="contenido">

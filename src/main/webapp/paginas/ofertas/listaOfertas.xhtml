@@ -19,21 +19,23 @@
             <h1 class="centrar colorAzul">Ofertas Disponibles</h1>
             <c:forEach var="ofertaActual" items="#{oferta.ofertas}">
                 <h:form>
-                <h:panelGrid columns="2" border="1" cellspacing="2" class="centrarTabla">
-                    <h:outputLabel value="Ofertante: "/>
-                    <h:outputText value="#{ofertaActual.usuario.nombre} #{ofertaActual.usuario.apellidos}"/>
-                    <h:outputLabel value="Nombre: "/>
-                    <h:outputText value="#{ofertaActual.nombre}"/>
-                    <h:outputLabel value="Disponibilidad: "/>
-                    <h:outputText value="desde #{ofertaActual.fechaInicio} hasta #{ofertaActual.fechaFin}"/>
-                    <h:outputLabel value="Categoria: "/>
-                    <h:outputText value="#{ofertaActual.subcategoria.categoria.nombre}: #{ofertaActual.subcategoria.nombre}"/>
-                </h:panelGrid>
-                    <h:commandButton class="centrarTabla" value="Seleccionar" action="#{oferta.elegirOferta(ofertaActual)}"/>
-                    </h:form>
+                    <h:panelGrid columns="2" border="1" cellspacing="2" class="centrarTabla">
+                        <h:outputLabel value="Ofertante: "/>
+                        <h:outputText value="#{ofertaActual.usuario.nombre} #{ofertaActual.usuario.apellidos}"/>
+                        <h:outputLabel value="Nombre: "/>
+                        <h:outputText value="#{ofertaActual.nombre}"/>
+                        <h:outputLabel value="Disponibilidad: "/>
+                        <h:outputText value="desde #{ofertaActual.fechaInicio} hasta #{ofertaActual.fechaFin}"/>
+                        <h:outputLabel value="Categoria: "/>
+                        <h:outputText value="#{ofertaActual.subcategoria.categoria.nombre}: #{ofertaActual.subcategoria.nombre}"/>
+                    </h:panelGrid>
+                    <c:if test="#{usuario.idUsuario!=0 and usuario.idUsuario!=null}">
+                        <h:commandButton class="centrarTabla" value="Seleccionar" action="#{oferta.elegirOferta(ofertaActual)}"/>
+                    </c:if>
+                </h:form>
                 <br/>
             </c:forEach>
-            
+
         </ui:define>
     </ui:composition>
 </html>

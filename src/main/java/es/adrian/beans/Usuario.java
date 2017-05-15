@@ -32,7 +32,7 @@ import org.hibernate.HibernateException;
  */
 @Entity
 @Table(name = "Usuarios")
-@ManagedBean(name = "usuario", eager = true)
+@ManagedBean(name = "usuario", eager = false)
 @SessionScoped
 public class Usuario implements Serializable {
 
@@ -44,7 +44,7 @@ public class Usuario implements Serializable {
     private String apellidos;
     private String clave;
     private String email;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "idCiudad")
     private Ciudad ciudad;
     private int saldo;

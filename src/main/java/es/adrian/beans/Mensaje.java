@@ -13,6 +13,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.persistence.*;
 import org.hibernate.HibernateException;
 
@@ -22,15 +24,16 @@ import org.hibernate.HibernateException;
  */
 @Entity
 @Table(name = "mensajes")
-@ManagedBean
+@ManagedBean(name = "mensaje", eager = false)
+@SessionScoped
 public class Mensaje implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idMensaje;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "idEmisor")
-    private Usuario emisor;
+    @JoinColumn(name = "idUsuario")
+    private Usuario usuario;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idOferta")
     private Oferta oferta;
@@ -47,12 +50,12 @@ public class Mensaje implements Serializable {
         this.idMensaje = idMensaje;
     }
 
-    public Usuario getEmisor() {
-        return emisor;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setEmisor(Usuario emisor) {
-        this.emisor = emisor;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public Oferta getOferta() {
@@ -94,22 +97,19 @@ public class Mensaje implements Serializable {
     public void setLeido(String leido) {
         this.leido = leido;
     }
-
-    public String addMensaje(Oferta oferta, Usuario usuario) {
+    
+    public String addMensaje(Usuario usuario) {
         String exito = null;
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
             IGenericoDAO gdao = daof.getGenericoDAO();
-            this.oferta=oferta;
-            this.emisor = usuario;
+            this.oferta = (Oferta)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("ofertaElegida");
+            this.usuario = usuario;
             this.leido = "n";
-            if (this.oferta == null) {
-                System.out.println("NULO ");
-            } else {
-                gdao.add(this);
-                limpiarDatos();
-                exito = "true";
-            }
+            gdao.add(this);
+            limpiarDatos();
+            exito = "true";
+
         } catch (HibernateException | NullPointerException e) {
             System.out.println("NULO2 ");
             Logger.getLogger(Mensaje.class.getName()).log(Level.SEVERE, null, e);
@@ -138,7 +138,7 @@ public class Mensaje implements Serializable {
     public void limpiarDatos() {
         this.asunto = null;
         this.contenido = null;
-        this.emisor = null;
+        this.usuario = null;
         this.idMensaje = 0;
         this.leido = null;
         this.oferta = null;

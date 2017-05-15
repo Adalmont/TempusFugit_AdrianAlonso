@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:of="http://omnifaces.org/functions">
+    <h:head>
+        <title>Facelet Title</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="estilos.css"/>   
+    </h:head>
+    <h:body>
+        <ui:composition template="/resources/plantilla/plantilla.xhtml">
+            <ui:define name="contenido">
+                <div class="col-lg-12 centrar">
+                    <h:form>
+                        <h:outputText value="Elige en que categoria quieres buscar"/>
+                        <h:selectOneMenu value="#{subcategoria.categoriaElegida}" converter="omnifaces.SelectItemsConverter">
+                            <f:ajax listener="#{subcategoria.recargarSubcat()}" render="elegirSubcat" />
+                            <f:selectItem value="#{null}" itemLabel="--Elige Categoria--"/>
+                            <f:selectItems value="#{categoria.cat}" var="cat" itemValue="#{cat}" itemLabel="#{cat.nombre}" />
+                        </h:selectOneMenu>
+                        <br/>
+                        <br/>
+                        <h:outputText value="Elige en que subcategoria quieres buscar"/>
+                        <h:selectOneMenu id="elegirSubcat" value="#{oferta.subcatBusqueda}" converter="omnifaces.SelectItemsConverter">
+                            <f:selectItem value="#{null}" itemLabel="--Elige Subcategoria--" noSelectionOption="true"/>
+                            <f:selectItems value="#{subcategoria.subcategoriasBusqueda}" var="subcat" itemValue="#{subcat}" itemLabel="#{subcat.nombre}" />
+                        </h:selectOneMenu>
+                        <br/>
+                        <br/>
+                        <h:commandButton class="btn btn-primary" value="Buscar" action="buscar"/>
+                    </h:form>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

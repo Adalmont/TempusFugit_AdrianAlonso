@@ -17,7 +17,7 @@
     color: red;
 }
 .navegacion{
-    height: 20px;
+    display: inline;
 }
 .centrarForm{
     margin-left: 20%;
@@ -40,4 +40,13 @@
 }
 .elementoMensaje{
     border: solid;
+    margin-top:2%;
+}
+.listaNav{
+    display: inline;
+    list-style: none;
+    float: left;
+}
+.navEl{
+    display: inline;
 }

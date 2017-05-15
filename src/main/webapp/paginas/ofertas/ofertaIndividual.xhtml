@@ -19,7 +19,7 @@
             <ui:define name="contenido">
                 <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarTabla">
                     <h:outputLabel value="Ofertante: "/>
-                    <h:outputText value="#{oferta.usuario.nombre} #{oferta.usuario.apellidos} #{oferta.idOferta}"/>
+                    <h:outputText value="#{oferta.usuario.nombre} #{oferta.usuario.apellidos}"/>
                     <h:outputLabel value="Nombre: "/>
                     <h:outputText value="#{oferta.nombre}"/>
                     <h:outputLabel value="Descripcion: "/>
@@ -32,49 +32,35 @@
 
                 <div class="col-lg-12">
                     <h1 class="centrar colorAzul">Mensajes</h1>
-                    <div class="col-lg-2">
-
-                    </div>
-                    <c:forEach id="listaMensajes" var="mensajeActual" items="#{mensaje.getMensajes(oferta.idOferta)}">
+                    <c:forEach var="mensajeActual" items="#{mensaje.getMensajes(oferta.idOferta)}">
                         <c:if test="#{mensajeActual.oferta.idOferta==oferta.idOferta}">
-                            <c:if test="#{mensajeActual.tipo eq 'pri' and usuario.idUsuario == mensajeActual.emisor.idUsuario or oferta.usuario.idUsuario == mensajeActual.emisor.idUsuario}">
-                                <div class="col-lg-8 centrarTabla">
-                                    <div class="col-lg-8">
-                                        <h:outputText class="centrar" value="Mensaje privado"/>
-                                    </div>
-                                    <div class="col-lg-2 elementoMensaje">
-                                        <h:outputText class="centrar colorFondoAzul" value="#{mensajeActual.emisor.nombre} #{mensajeActual.emisor.apellidos}"/>
-                                    </div>
-                                    <div class="col-lg-6 elementoMensaje">
-                                        <h:outputText class="centrar" value="#{mensajeActual.asunto}"/>
-                                    </div>
-                                    <div class="col-lg-8 elementoMensaje">
-                                        <h:outputText value="#{mensajeActual.contenido}"/>
-                                    </div>
-                                </div>
+                            <c:if test="#{mensajeActual.tipo eq 'pri' and (usuario.idUsuario == mensajeActual.usuario.idUsuario or oferta.usuario.idUsuario == usuario.idUsuario)}">
+                                <h:panelGrid class="centrarTabla" columns="2" border="0" cellspacing="2">
+                                    <h:outputLabel value="Autor: "/>
+                                    <h:outputText class="centrar colorFondoAzul" value="#{mensajeActual.usuario.nombre} #{mensajeActual.usuario.apellidos}"/>
+                                    <h:outputLabel value="Asunto: "/>
+                                    <h:outputText class="centrar" value="#{mensajeActual.asunto}"/>
+                                    <h:outputLabel value="Contenido: "/>
+                                    <h:outputText value=" #{mensajeActual.contenido}"/>
+                                </h:panelGrid>
+                                <br/>
                             </c:if>
                             <c:if test="#{mensajeActual.tipo eq 'pu'}">
-                                <div class="col-lg-8 centrarTabla">
-                                    <div class="col-lg-2 elementoMensaje">
-                                        <h:outputText class="centrar" value="#{mensajeActual.emisor.nombre} #{mensajeActual.emisor.apellidos}"/>
-                                    </div>
-                                    <div class="col-lg-6 elementoMensaje">
-                                        <h:outputText class="centrar" value="#{mensajeActual.asunto}"/>
-                                    </div>
-                                    <div class="col-lg-8">
-                                        <h:outputText value="#{mensajeActual.contenido}"/>
-                                    </div>
-                                </div>
+                                <h:panelGrid class="centrarTabla" columns="2" border="0" cellspacing="2">
+                                    <h:outputLabel value="Autor: "/>
+                                    <h:outputText class="centrar" value="#{mensajeActual.usuario.nombre} #{mensajeActual.usuario.apellidos}"/>
+                                    <h:outputLabel value="Asunto: "/>
+                                    <h:outputText class="centrar" value="#{mensajeActual.asunto}"/>
+                                    <h:outputLabel value="Contenido: "/>
+                                    <h:outputText value=" #{mensajeActual.contenido}"/>
+                                </h:panelGrid>
+                                <br/>
                             </c:if>
                         </c:if>
                     </c:forEach>
-                    <div class="col-lg-2">
-
-                    </div>
                     <div id="crearMensaje" class="col-lg-12 centrar hidden">
                         <br/>
                         <h:form id="formulario" class="centrar">
-                            <h:outputText class="centrar mensajeOferta colorAzulOscuro" value="#{oferta.mensaje}"/>
                             <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarFormMensaje">
                                 <h:outputLabel value="Asunto: "/>
                                 <h:inputText value="#{mensaje.asunto}" pt:placeholder="Asunto" pt:required="true"/>
@@ -84,13 +70,14 @@
                                     <f:selectItem itemValue="pu" itemLabel="Publico"/>
                                     <f:selectItem itemValue="pri" itemLabel="Privado"/>
                                 </h:selectOneRadio>
-                                <h:commandButton class="centrarTabla" value="Crear Mensaje">
-                                    <f:ajax execute="@form" listener="#{mensaje.addMensaje(oferta, usuario)}" render="formulario listaMensajes"/>
-                                </h:commandButton>
+                                <!--<h:commandButton class="centrarTabla" value="Crear Mensaje">
+                                    <f:ajax execute="@form" listener="{mensaje.addMensaje(usuario)}" render="@all"/>
+                                </h:commandButton>-->
+                                <h:commandButton class="centrarTabla" value="Crear Mensaje" action="#{mensaje.addMensaje(usuario)}"/>
                             </h:panelGrid>
                         </h:form>
                     </div>
-                    <c:if test="#{usuario.idUsuario!=null and usuario.idUsuario!=0}">
+                    <c:if test="#{usuario.idUsuario!=oferta.usuario.idUsuario}">
                         <div class="col-lg-12">
                             <button class="btn btn-primary centrarTabla" id="botonMensaje">Añadir Mensaje</button>
                         </div>

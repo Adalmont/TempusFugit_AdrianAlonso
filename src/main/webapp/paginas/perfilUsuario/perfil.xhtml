@@ -19,8 +19,9 @@
 
         <ui:composition template="/resources/plantilla/plantilla.xhtml">
             <ui:define name="contenido">
+                <f:event type="preRenderView" listener="#{oferta.limpiarDatos()}"/>
                 <h1 class="centrar colorAzulOscuro">Perfil de #{usuario.nombre} #{usuario.apellidos}</h1>
-                <div class="row col-lg-12 centrar" id="oferta">
+                <div class="row col-lg-12 centrar hidden" id="oferta">
                     <!--En este formulario pueden crearse las ofertas para la pagina.
                     La seleccion de categorias se hace llamando a un metodo tipo ArrayList de Subcategorias en el bean de Oferta.
                     Para que el valor de cada objeto del Select sea un objeto de tipo Subcategoria utilizo un convertidor de
@@ -36,7 +37,7 @@
                             <h:inputText value="#{oferta.descripcion}" pt:placeholder="Descripcion de la Oferta" pt:required="true"/>
                             <h:outputLabel value="Categoria: "/>
                             <h:selectOneMenu value="#{oferta.subcategoria}" converter="omnifaces.SelectItemsConverter">
-                                <f:selectItems value="#{oferta.subcat}" var="subc" itemValue="#{subc}" itemLabel="#{subc.nombre}"/>
+                                <f:selectItems value="#{subcategoria.subcat}" var="subc" itemValue="#{subc}" itemLabel="#{subc.nombre}"/>
                             </h:selectOneMenu>
                             <h:outputLabel value="Fecha Inicio: "/>
                             <h:inputText value="#{oferta.fechaInicio}" pt:pattern="(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}" pt:placeholder="dd-mm-yyyy" pt:required="true">
@@ -46,10 +47,11 @@
                             <h:inputText value="#{oferta.fechaFin}" pt:pattern="(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}" pt:placeholder="dd-mm-yyyy" pt:required="true">
                                 <f:convertDateTime pattern="dd-mm-yyyy"/>
                             </h:inputText>
-                            <h:commandButton class="centrarTabla" value="Aceptar">
-                                <f:ajax execute="@form" listener="#{oferta.addOferta()}" render="formulario"/>
-                            </h:commandButton>
-                            <!--<h:commandButton class="centrarForm" value="Aceptar" action="{oferta.addOferta()}"/>-->
+                            <!--<h:commandButton class="centrarTabla" value="Aceptar">
+                                <f:ajax execute="@form" listener="{oferta.addOferta()}" render="formulario"/>
+                            </h:commandButton>-->
+                            <h:commandButton class="btn btn-primary" value="Aceptar" action="#{oferta.addOferta()}"/>
+                            <br/>
                         </h:panelGrid>
                     </h:form>
                 </div>
@@ -84,12 +86,21 @@
                 <div class="row col-lg-12 centrar">
                     <button id="botonDatos" class="btn btn-primary">Datos personales</button>
                     <button id="botonOferta" class="btn btn-primary">Crear Oferta</button>
+                    <!--<h:button id="botonDatos" class="btn btn-primary" value="Datos Personales"/>
+                    <h:button id="botonOferta" class="btn btn-primary" value="Crear Oferta"/>-->
+                </div>
+                <div class="row col-lg-12 centrar">
+                    <br/>
                     <h:form>
                         <h:commandButton  class="btn btn-primary" value="Desconectar" action="#{usuario.logOut()}"/>
                     </h:form>
                 </div>
                 <script>
                     $("#botonOferta").click(function () {
+                        $("#botonOferta").addClass("hidden");
+                        if ($("#botonDatos").hasClass("hidden")) {
+                            $("#botonDatos").removeClass("hidden");
+                        }
                         if ($("#oferta").hasClass("hidden")) {
                             if (!$("#datos").hasClass("hidden")) {
                                 $("#datos").addClass("hidden");
@@ -98,6 +109,10 @@
                         }
                     });
                     $("#botonDatos").click(function () {
+                        $("#botonDatos").addClass("hidden");
+                        if ($("#botonOferta").hasClass("hidden")) {
+                            $("#botonOferta").removeClass("hidden");
+                        }
                         if ($("#datos").hasClass("hidden")) {
                             if (!$("#oferta").hasClass("hidden")) {
                                 $("#oferta").addClass("hidden");

@@ -14,7 +14,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.*;
+import javax.faces.context.FacesContext;
 import javax.persistence.*;
 import org.hibernate.HibernateException;
 
@@ -24,8 +25,8 @@ import org.hibernate.HibernateException;
  */
 @Entity
 @Table(name = "ofertas")
-@ManagedBean
-@RequestScoped
+@ManagedBean(name = "oferta", eager = false)
+@SessionScoped
 public class Oferta implements Serializable {
 
     @Id
@@ -47,6 +48,8 @@ public class Oferta implements Serializable {
     private String estado;
     @Transient
     private String mensaje;
+    @Transient
+    private Subcategoria subcatBusqueda;
 
     public int getIdOferta() {
         return idOferta;
@@ -120,7 +123,31 @@ public class Oferta implements Serializable {
         this.mensaje = mensaje;
     }
 
+    public Subcategoria getSubcatBusqueda() {
+        return subcatBusqueda;
+    }
+
+    public void setSubcatBusqueda(Subcategoria subcatBusqueda) {
+        this.subcatBusqueda = subcatBusqueda;
+    }
+
     public ArrayList<Oferta> getOfertas() {
+        ArrayList<Oferta> listaOfertas = new ArrayList();
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            if (this.subcatBusqueda == null) {
+                listaOfertas = (ArrayList<Oferta>) gdao.get("Oferta");
+            } else {
+                listaOfertas = (ArrayList<Oferta>) gdao.get("Oferta where idSubcategoria= " + this.subcatBusqueda.getIdSubcategoria());
+            }
+        } catch (HibernateException he) {
+            Logger.getLogger(Oferta.class.getName()).log(Level.SEVERE, null, he);
+        }
+        return listaOfertas;
+    }
+
+    /*public ArrayList<Oferta> getOfertasByCat() {
         ArrayList<Oferta> listaOfertas = new ArrayList();
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -129,9 +156,7 @@ public class Oferta implements Serializable {
         } catch (HibernateException he) {
             Logger.getLogger(Oferta.class.getName()).log(Level.SEVERE, null, he);
         }
-        return listaOfertas;
-    }
-
+    }*/
     public String addOferta() {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -148,18 +173,7 @@ public class Oferta implements Serializable {
             return "false";
         }
     }
-    /*Este metodo devuelve un ArrayList de subcategorias, que utilizo para rellenar un Select en las paginas xhtml*/
-    public ArrayList<Subcategoria> getSubcat() {
-        ArrayList<Subcategoria> listaSubcat = new ArrayList();
-        try {
-            DAOFactory daof = DAOFactory.getDAOFactory();
-            IGenericoDAO gdao = daof.getGenericoDAO();
-            listaSubcat = (ArrayList<Subcategoria>) gdao.get("Subcategoria");
-        } catch (HibernateException he) {
-            Logger.getLogger(Subcategoria.class.getName()).log(Level.SEVERE, null, he);
-        }
-        return listaSubcat;
-    }
+
     /*Este metodo recibe los datos de una oferta en la lista de ofertas y la pasa al bean para mostrarla en la pagina de
     la oferta individual*/
     public String elegirOferta(Oferta ofertaElegida) {
@@ -172,6 +186,7 @@ public class Oferta implements Serializable {
             this.fechaInicio = ofertaElegida.fechaInicio;
             this.subcategoria = ofertaElegida.subcategoria;
             this.usuario = ofertaElegida.usuario;
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("ofertaElegida", this);
             return "true";
         } else {
             return "false";
@@ -186,6 +201,8 @@ public class Oferta implements Serializable {
         this.fechaFin = null;
         this.fechaInicio = null;
         this.subcategoria = null;
+        this.mensaje = null;
+        this.subcatBusqueda=null;
     }
 
 }
