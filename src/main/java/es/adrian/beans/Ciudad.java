@@ -5,7 +5,12 @@
  */
 package es.adrian.beans;
 
+import es.adrian.dao.IGenericoDAO;
+import es.adrian.daofactory.DAOFactory;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -13,17 +18,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
+import org.hibernate.HibernateException;
+
 /**
  *
  * @author Adrian
  */
 @Entity
-@Table(name="ciudades")
+@Table(name = "ciudades")
 @ManagedBean
-public class Ciudad implements Serializable{
+public class Ciudad implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idCiudad;
+    private Integer idCiudad;
     private String nombre;
     private String estado;
     private double latitud;
@@ -68,5 +76,30 @@ public class Ciudad implements Serializable{
     public void setLongitud(double longitud) {
         this.longitud = longitud;
     }
-    
+
+    public ArrayList<Ciudad> getCiudades() {
+        ArrayList<Ciudad> listaCiudades = new ArrayList();
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            listaCiudades = (ArrayList<Ciudad>) gdao.get("Ciudad");
+        } catch (HibernateException he) {
+            Logger.getLogger(Oferta.class.getName()).log(Level.SEVERE, null, he);
+        }
+        return listaCiudades;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return (other != null && getClass() == other.getClass() && this.idCiudad != null)
+                ? this.idCiudad.equals(((Ciudad) other).idCiudad)
+                : (other == this);
+    }
+
+    @Override
+    public int hashCode() {
+        return (this.idCiudad != null)
+                ? (getClass().hashCode() + this.idCiudad.hashCode())
+                : super.hashCode();
+    }
 }

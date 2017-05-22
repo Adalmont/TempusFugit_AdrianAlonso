@@ -7,13 +7,18 @@ package es.adrian.beans;
 
 import es.adrian.dao.IGenericoDAO;
 import es.adrian.daofactory.DAOFactory;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.*;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -24,6 +29,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.servlet.http.Part;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FilenameUtils;
 import org.hibernate.HibernateException;
 
 /**
@@ -56,6 +64,10 @@ public class Usuario implements Serializable {
     private String confirmarClave;
     /*@Transient
     private String nuevaClave;*/
+    @Transient
+    private Part imgSubir;
+    @Transient
+    private String codigoProm;
 
     public int getIdUsuario() {
         return idUsuario;
@@ -145,6 +157,22 @@ public class Usuario implements Serializable {
         this.confirmarClave = confirmarClave;
     }
 
+    public Part getImgSubir() {
+        return imgSubir;
+    }
+
+    public void setImgSubir(Part imgSubir) {
+        this.imgSubir = imgSubir;
+    }
+
+    public String getCodigoProm() {
+        return codigoProm;
+    }
+
+    public void setCodigoProm(String codigoProm) {
+        this.codigoProm = codigoProm;
+    }
+
     /*public String getNuevaClave() {
         return nuevaClave;
     }
@@ -152,7 +180,6 @@ public class Usuario implements Serializable {
     public void setNuevaClave(String nuevaClave) {
         this.nuevaClave = nuevaClave;
     }*/
-
     public void limpiarDatos() {
         this.nombre = null;
         this.apellidos = null;
@@ -164,28 +191,35 @@ public class Usuario implements Serializable {
         this.saldo = 0;
         this.tipo = null;
         this.mensaje = null;
+        this.imgSubir = null;
     }
 
     public String logOut() {
         limpiarDatos();
         return "true";
     }
+
     /*Este metodo añade usuarios a la base de datos. si no se ha seleccionado ninguna ciudad, asigna una por defecto */
-    public String addUsuario() {
+    public String addUsuario() throws Exception {
         String exito = null;
         if (this.clave.equals(this.confirmarClave)) {
             try {
-                DAOFactory daof = DAOFactory.getDAOFactory();
-                IGenericoDAO gdao = daof.getGenericoDAO();
-                if (this.ciudad == null) {
-                    this.ciudad = new Ciudad();
-                    this.ciudad.setIdCiudad(1);
-                    this.ciudad = (Ciudad) gdao.getOne(this.ciudad.getIdCiudad(), this.ciudad.getClass());
+                if (this.ciudad.getIdCiudad() == 1) {
+                    exito = "false";
+                    limpiarDatos();
+                    this.mensaje = "Elija una ciudad";
+                } else {
+                    DAOFactory daof = DAOFactory.getDAOFactory();
+                    IGenericoDAO gdao = daof.getGenericoDAO();
+                    this.tipo = "n";
+                    this.clave = encriptarMD5(this.clave);
+                    gdao.add(this);
+                    logUsuario();
+                    if (this.imgSubir != null) {
+                        subirAvatar();
+                    }
+                    exito = "true";
                 }
-                this.tipo = "n";
-                gdao.add(this);
-                logUsuario();
-                exito = "true";
             } catch (HibernateException | NullPointerException e) {
                 exito = "false";
                 limpiarDatos();
@@ -199,23 +233,31 @@ public class Usuario implements Serializable {
         }
         return exito;
     }
-    
-    public String logUsuario() {
-        String resultado = "false";
+
+    public String logUsuario() throws Exception {
+        String resultado;
         DAOFactory daof = DAOFactory.getDAOFactory();
         IGenericoDAO gdao = daof.getGenericoDAO();
-        Usuario user = (Usuario) gdao.getUsuario(this.email, this.clave);
-        if (user != null) {
-            this.apellidos = user.apellidos;
-            this.nombre = user.nombre;
-            this.avatar = user.avatar;
-            this.ciudad = user.ciudad;
-            this.idUsuario = user.idUsuario;
-            this.saldo = user.saldo;
-            this.tipo = user.tipo;
+        ArrayList<Usuario> user;
+        if (this.nombre == null && this.apellidos == null) {
+            user = (ArrayList<Usuario>) gdao.get("Usuario as u where u.email= '" + this.email + "' and u.clave= '" + encriptarMD5(this.clave) + "'");
+        } else {
+            user = (ArrayList<Usuario>) gdao.get("Usuario as u where u.email= '" + this.email + "' and u.clave= '" + this.clave + "'");
+        }
+        if (!user.isEmpty()) {
+            this.apellidos = user.get(0).apellidos;
+            this.nombre = user.get(0).nombre;
+            this.avatar = user.get(0).avatar;
+            this.ciudad = user.get(0).ciudad;
+            this.idUsuario = user.get(0).idUsuario;
+            this.saldo = user.get(0).saldo;
+            this.tipo = user.get(0).tipo;
+            this.clave = user.get(0).clave;
             this.confirmarClave = null;
             this.mensaje = null;
             resultado = "true";
+        } else {
+            resultado = "false";
         }
         if (resultado.equals("false")) {
             limpiarDatos();
@@ -223,6 +265,7 @@ public class Usuario implements Serializable {
         }
         return resultado;
     }
+
     /*public String updateUsuario(){
         try{
             if (!this.confirmarClave.equals(this.clave)){
@@ -238,4 +281,68 @@ public class Usuario implements Serializable {
         }catch(HibernateException he){
             Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
         }*/
+    public String updateUsuario() throws Exception {
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            gdao.update(this);
+            logUsuario();
+            return "true";
+
+        } catch (HibernateException he) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
+            return "false";
+        }
+    }
+    
+    public String comprobarCodigo() throws Exception{
+        try{
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            ArrayList<Promocion> codigo;
+            codigo = (ArrayList<Promocion>)gdao.get("Promocion as p where p.codigo = '"+this.codigoProm+"'");
+            if (codigo.isEmpty()){
+                this.codigoProm=null;
+                this.mensaje= "El codigo introducido no es correcto";
+                return "false";
+            }else{
+                this.codigoProm=null;
+                this.saldo = this.saldo + codigo.get(0).getSaldo();
+                updateUsuario();
+                this.mensaje= codigo.get(0).getSaldo()+ " minutos se han añadido a su cuenta";
+                return "true";
+            }
+        } catch (HibernateException he) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
+            return "false";
+        }
+    }
+
+    public void subirAvatar() throws IOException, Exception {
+        setAvatar(subirImagen("avatares", this.imgSubir, String.valueOf(this.idUsuario)));
+        updateUsuario();
+    }
+
+    static String subirImagen(String carpeta, Part archivo, String nombre) throws IOException {
+        String filename = FilenameUtils.getBaseName(nombre);
+        String extension = FilenameUtils.getExtension(".jpg");
+        Path fichero = Paths.get("C:\\NetBeansProjects\\TempusFugitAdrianAlonso\\src\\main\\webapp\\resources\\imagenes\\avatares" + System.getProperty("file.separator") + filename + "." + extension);
+        Path file = Files.createFile(fichero);
+        try (InputStream input = archivo.getInputStream()) {
+            Files.copy(input, file, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        System.out.println("Imagen subida a: " + file);
+
+        return file.getFileName().toString();
+
+    }
+
+    public static String encriptarMD5(String cadena) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(cadena.getBytes());
+        byte[] digest = md.digest();
+        byte[] encoded = Base64.encodeBase64(digest);
+        return new String(encoded);
+    }
 }

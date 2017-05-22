@@ -17,7 +17,7 @@ import javax.persistence.Table;
  * @author Adrian
  */
 @Entity
-@Table(name="promociones")
+@Table(name="promocion")
 @ManagedBean
 public class Promocion implements Serializable {
     @Id

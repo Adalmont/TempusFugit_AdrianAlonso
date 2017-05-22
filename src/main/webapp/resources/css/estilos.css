@@ -28,6 +28,9 @@
 .centrarTabla{
     margin-left: 40%;
 }
+.centrarImg{
+    margin-left: 45%;
+}
 .botonesCabecera{
     margin-top: 10%;
 }
@@ -43,7 +46,6 @@
     margin-top:2%;
 }
 .listaNav{
-    display: inline;
     list-style: none;
     float: left;
 }

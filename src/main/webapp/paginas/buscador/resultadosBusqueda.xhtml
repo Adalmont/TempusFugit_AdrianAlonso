@@ -18,6 +18,7 @@
     <h:body>
         <ui:composition template="/resources/plantilla/plantilla.xhtml">
             <ui:define name="contenido">
+                <f:event type="preRenderView" listener="#{oferta.limpiarDatos()}"/>
                 <div class="col-lg-12 centrar">
                     <h:form>
                         <h:outputText value="Elige en que categoria quieres buscar"/>
@@ -43,21 +44,26 @@
                     <c:forEach var="ofertaActual" items="#{oferta.ofertas}">
                         <c:choose>
                             <c:when test="#{not empty ofertaActual}">
-                                <h:form>
-                                    <h:panelGrid columns="2" border="1" cellspacing="2" class="centrarTabla">
-                                        <h:outputLabel value="Ofertante: "/>
-                                        <h:outputText value="#{ofertaActual.usuario.nombre} #{ofertaActual.usuario.apellidos}"/>
-                                        <h:outputLabel value="Nombre: "/>
-                                        <h:outputText value="#{ofertaActual.nombre}"/>
-                                        <h:outputLabel value="Disponibilidad: "/>
-                                        <h:outputText value="desde #{ofertaActual.fechaInicio} hasta #{ofertaActual.fechaFin}"/>
-                                        <h:outputLabel value="Categoria: "/>
-                                        <h:outputText value="#{ofertaActual.subcategoria.categoria.nombre}: #{ofertaActual.subcategoria.nombre}"/>
-                                    </h:panelGrid>
-                                    <c:if test="#{usuario.idUsuario!=0 and usuario.idUsuario!=null}">
-                                        <h:commandButton class="centrarTabla" value="Seleccionar" action="#{oferta.elegirOferta(ofertaActual)}"/>
-                                    </c:if>
-                                </h:form>
+                                <c:if test="#{usuario.idUsuario==0 or usuario.ciudad== ofertaActual.usuario.ciudad}">
+                                    <h:form>
+                                        <h:panelGrid columns="2" border="1" cellspacing="2" class="centrarTabla">
+                                            <c:choose>
+                                                <c:when test="#{ofertaActual.imgPrincipal==null}">
+                                                    <h:graphicImage alt="foto de perfil" library="imagenes" value="/resources/imagenes/ofertas/serviciogenerico.jpg" height="120" width="120"/>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <h:graphicImage alt="foto de perfil" library="imagenes" value="/resources/imagenes/ofertas/#{ofertaActual.imgPrincipal}" height="120" width="120"/>
+                                                </c:otherwise>
+                                            </c:choose><br/>
+                                            <h:outputText value="#{ofertaActual.nombre}"/><br/>
+                                            <h:outputText value="desde #{ofertaActual.fechaInicio} hasta #{ofertaActual.fechaFin}"/><br/>
+                                            <h:outputText value="#{ofertaActual.subcategoria.categoria.nombre}: #{ofertaActual.subcategoria.nombre}"/><br/>
+                                        </h:panelGrid>
+                                        <c:if test="#{usuario.idUsuario!=0 and usuario.idUsuario!=null}">
+                                            <h:commandButton class="centrarTabla" value="Seleccionar" action="#{oferta.elegirOferta(ofertaActual)}"/>
+                                        </c:if>
+                                    </h:form>
+                                </c:if>
                             </c:when>
                             <c:otherwise>
                                 <h:outputText value="No hay resultados"/>

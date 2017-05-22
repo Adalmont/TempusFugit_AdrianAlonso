@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Tempus Fugit</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -12,61 +13,43 @@
         <h:outputStylesheet library="css" name="estilos.css"/>
     </h:head>
     <h:body>
-        <script>
-            /*
-             * Esta funcion es necesaria para que los dropdown funcionen al hacer click en ellos
-             */
-            $(document).ready(function () {
-                $('.dropdown-submenu a.test').on("click", function (e) {
-                    $(this).next('ul').toggle();
-                    e.stopPropagation();
-                    e.preventDefault();
-                });
-            });
-
-        </script>
         <div class="container-fluid">
             <div id="cabecera" class="col-lg-12 colorFondoAzul">
                 <div>
                     <header>
                         <div class="col-lg-4">
-
+                            <c:if test="#{usuario.idUsuario!=null and usuario.idUsuario!=0}">
+                                <c:choose>
+                                    <c:when test="#{usuario.avatar==null}">
+                                        <h:graphicImage alt="foto de perfil" library="imagenes" value="/resources/imagenes/avatares/desconocido.png" height="120" width="120"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <h:graphicImage alt="foto de perfil" library="imagenes" value="/resources/imagenes/avatares/#{usuario.avatar}" height="120" width="120"/>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:if>
                         </div>
                         <div class="col-lg-4 centrar">
                             <h:link outcome="/index.xhtml"><img src="#{request.contextPath}/resources/imagenes/LogoT.png" width="240px" height="100px"/></h:link>
                         </div>
                         <div class="col-lg-4">
-                            <div class="botonesCabecera centrar">
-                                <c:choose>
-                                    <c:when  test="#{usuario.idUsuario!=0}">
-                                        <div class="dropdown">
-                                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Menu <span class="caret"></span></button>
-                                            <ul class="dropdown-menu">
-                                                <li><h:link value="Perfil" outcome="/paginas/perfilUsuario/perfil.xhtml"/></li>
-                                            </ul>
-                                        </div>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <div class="dropdown">
-                                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Login/Registro <span class="caret"/></button>
-                                            <ul class="dropdown-menu">
-                                                <li><h:link value="Login" outcome="/paginas/registro-login/login.xhtml"/></li>  
-                                                <li><h:link value="Registro" outcome="/paginas/registro-login/registro.xhtml"/></li>
-                                            </ul>
-                                        </div>
-                                    </c:otherwise>
-                                </c:choose>
-                            </div>
                         </div>
                     </header>
                 </div>
             </div>
-            <div id="navegacion" class="colorFondoAzulOscuro navegacion col-lg-12">
+            <div id="navegacion" class="colorFondoAzulOscuro col-lg-12">
                 <ul class="listaNav">
-                    <li class="navEl"><h:link class="btn-primary" value="Lista de Ofertas" outcome="/paginas/ofertas/listaOfertas.xhtml"/></li>
-                <c:if test="#{usuario.idUsuario!=null and usuario.idUsuario!=0}">
-                    <li class="navEl"><h:link class="btn-primary" value="Buscador de ofertas" outcome="/paginas/buscador/buscador.xhtml"/></li>
-                </c:if>
+                    <c:choose>
+                        <c:when  test="#{usuario.idUsuario!=0}">
+                            <li class="navEl"><h:link class="btn btn-primary" value="Perfil" outcome="/paginas/perfilUsuario/perfil.xhtml"/></li>
+                        </c:when>
+                        <c:otherwise>
+                            <li class="navEl"><h:link class="btn btn-primary" value="Login" outcome="/paginas/registro-login/login.xhtml"/></li>  
+                            <li class="navEl"><h:link class="btn btn-primary" value="Registro" outcome="/paginas/registro-login/registro.xhtml"/></li>
+                        </c:otherwise>
+                    </c:choose>
+                    <li class="navEl"><h:link class="btn btn-primary" value="Lista de Ofertas" outcome="/paginas/ofertas/listaOfertas.xhtml"/></li>
+                    <li class="navEl"><h:link class="btn btn-primary" value="Buscador de ofertas" outcome="/paginas/buscador/buscador.xhtml"/></li>
                 </ul>
             </div>
             <div id="contenido" class="col-lg-12">
@@ -75,13 +58,8 @@
                 </ui:insert>
             </div>
             <div id="pie" class="col-lg-12 colorFondoAzul">
-                <div>
-                    <div class="col-lg-6 centrar">
-                        <p>Sobre la Web(proximamente)</p>
-                    </div>
-                    <div class="col-lg-6 centrar">
-                        <p><h:link class="btn btn-primary" value="Contactanos" outcome="/paginas/contacto/contacto.xhtml"/></p>
-                    </div>
+                <div class="col-lg-12 centrar">
+                    <p><h:link class="btn btn-primary" value="Contactanos" outcome="/paginas/contacto/contacto.xhtml"/></p>
                 </div>
             </div>
         </div>

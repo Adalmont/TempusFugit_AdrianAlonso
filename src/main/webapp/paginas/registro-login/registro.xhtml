@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Registro de usuario</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -20,16 +21,22 @@
                 <div class="col-lg-4">
 
                 </div>
-                <h:form class="centrar">
+                <h:form class="centrar" enctype="multipart/form-data">
                     <div class="col-lg-4">
                         <h3 id="mensaje" class="colorRojo centrar">#{usuario.mensaje}</h3>
                         <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarForm">
+                            <h:outputLabel value="Avatar: "/>
+                            <h:inputFile value="#{usuario.imgSubir}" class="centrarTabla"  id="iAvatar"></h:inputFile>
                             <h:outputLabel value="Nombre:"/>
                             <h:inputText id="nombre" value="#{usuario.nombre}" pt:required="true" pt:placeholder="Nombre" required="true"/>
                             <h:outputLabel value="Apellidos:"/>
                             <h:inputText id="apellidos" value="#{usuario.apellidos}" pt:required="true" pt:placeholder="Apellidos" required="true"/>
                             <h:outputLabel value="Email: "/>
                             <h:inputText id="email" value="#{usuario.email}" pt:required="true" pt:placeholder="Email" pt:type="email"/>
+                            <h:outputLabel value="Ciudad de Residencia: "/>
+                            <h:selectOneMenu value="#{usuario.ciudad}" converter="omnifaces.SelectItemsConverter">
+                                <f:selectItems value="#{ciudad.ciudades}" var="ciu" itemValue="#{ciu}" itemLabel="#{ciu.nombre}"/>
+                            </h:selectOneMenu>
                             <h:outputLabel value="Contraseña:"/>
                             <h:inputSecret id="clave" value="#{usuario.clave}" pt:required="true" required="true"/>
                             <h:outputLabel value="Repita la contraseña:"/>

@@ -41,7 +41,7 @@ public class GenericoDAO<T> implements IGenericoDAO<T> {
     public void add(T objeto) {
         try {
             iniciaSesion();
-            sesion.saveOrUpdate(objeto);
+            sesion.save(objeto);
             sesion.flush();
             
         } catch (HibernateException he){
@@ -83,29 +83,18 @@ public class GenericoDAO<T> implements IGenericoDAO<T> {
     }
     
     @Override
-    public <T> T getUsuario(String email, String clave){
-        T objetoRecuperado=null;
+    public void update(T objeto) {
         try {
             iniciaSesion();
-            String hql= "from Usuario as usuario where usuario.email = :usuarioEmail and usuario.clave = :usuarioClave";
-            Query query = sesion.createQuery(hql);
-            query.setParameter("usuarioEmail", email);
-            query.setParameter("usuarioClave", clave);
-            List <T> usuario = query.list();
-            if (!usuario.isEmpty()){
-            objetoRecuperado = usuario.get(0);
-            }
-        } catch(HibernateException he){
-            this.manejaExcepcion(he);
+            sesion.update(objeto);
+            sesion.flush();
+            
+        } catch (HibernateException he){
+            manejaExcepcion(he);
+            Logger.getLogger(GenericoDAO.class.getName()).log(Level.SEVERE, null, he);
         } finally {
-            this.cierraSesion();
+            cierraSesion();
         }
-        return objetoRecuperado;
-    }
-    
-    @Override
-    public void update(T objeto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

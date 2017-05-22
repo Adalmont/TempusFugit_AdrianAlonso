@@ -28,9 +28,11 @@
                     la libreria omnifaces.
                     Para las fechas utilizo un patron de html5 y un convertidor de jsf, lo que permite que pase al bean como
                     un objeto de tipo Date.-->
-                    <h:form id="formulario" class="centrar">
+                    <h:form id="formulario" class="centrar" enctype="multipart/form-data">
                         <h:outputText class="centrar mensajeOferta colorAzulOscuro" value="#{oferta.mensaje}"/>
-                        <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarTabla">
+                        <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarTabla" >
+                            <h:outputLabel value="Imagen de la oferta: "/>
+                            <h:inputFile value="#{oferta.imgSubir}"></h:inputFile>
                             <h:outputLabel value="Nombre: "/>
                             <h:inputText value="#{oferta.nombre}" pt:placeholder="Nombre de la Oferta" pt:required="true"/>
                             <h:outputLabel value="Descripción: "/>
@@ -56,36 +58,38 @@
                     </h:form>
                 </div>
                 <div class="row col-lg-12 centrar hidden" id="datos">
+                    <c:choose>
+                        <c:when test="#{usuario.avatar==null}">
+                            <h:form enctype="multipart/form-data">
+                                <h:outputLabel value="Avatar: "/>
+                                <h:inputFile value="#{usuario.imgSubir}" class="centrarTabla"  id="iAvatar"></h:inputFile>
+                                <h:commandButton value="Actualizar" action="#{usuario.subirAvatar()}"/>
+                            </h:form>
+                        </c:when>
+                        <c:otherwise>
+                            <h:graphicImage alt="foto de perfil" library="imagenes" value="/resources/imagenes/avatares/#{usuario.avatar}" height="120" width="120"/>
+                        </c:otherwise>
+                    </c:choose>
                     <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarTabla">
+
                         <h:outputLabel value="Nombre: "/><h:outputText value="#{usuario.nombre}"/>
                         <h:outputLabel value="Apellidos: "/><h:outputText value="#{usuario.apellidos}"/>
                         <h:outputLabel value="Email: "/><h:outputText value="#{usuario.email}"/>
                         <h:outputLabel value="Ciudad de residencia: "/><h:outputText value="#{usuario.ciudad.nombre}"/>
-                        <h:outputLabel value="Saldo: "/><h:outputText value="#{usuario.saldo}"/>
+                        <h:outputLabel value="Saldo: "/><h:outputText value="#{usuario.saldo} minutos"/>
                     </h:panelGrid>
-                    <!--<h:form class="centrar">
-                    <div class="col-lg-4">
-                        <h3 id="mensaje" class="colorRojo centrar">{usuario.mensaje}</h3>
-                        <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarForm">
-                            <h:outputLabel value="Nuevo nombre:"/>
-                            <h:inputText id="nombre" value="{usuario.nombre}" pt:placeholder="Nombre" required="true"/>
-                            <h:outputLabel value="Nuevos Apellidos:"/>
-                            <h:inputText id="email" value="{usuario.email}"  pt:placeholder="Email" pt:type="email"/>
-                            <h:outputLabel value="Antigua Contraseña:"/>
-                            <h:inputSecret id="clave" value="{usuario.confirmarClave}"/>
-                            <h:outputLabel value="Nueva Contraseña:"/>
-                            <h:inputSecret id="confClave" value="{usuario.nuevaClave}"/>
-                        </h:panelGrid>
-                        <h:commandButton value="Aceptar">
-                            <f:ajax render="mensaje"/>
-                        </h:commandButton>
-                        <h:commandButton value="Volver" action="volver" immediate="true"/>
-                    </div>
-                </h:form>-->
+                </div>
+                <div class="row col-lg-12 centrar hidden" id="promocion">
+                    <h:form>
+                        <h:outputText value="Introduzca el codigo promocional: "/>
+                        <h:inputText value="#{usuario.codigoProm}"/>
+                        <h:commandButton value="Enviar" action="#{usuario.comprobarCodigo()}"/>
+                    </h:form>
                 </div>
                 <div class="row col-lg-12 centrar">
                     <button id="botonDatos" class="btn btn-primary">Datos personales</button>
                     <button id="botonOferta" class="btn btn-primary">Crear Oferta</button>
+                    <button id="botonPromo" class="btn btn-primary">Introducir codigo promocional</button>
                     <!--<h:button id="botonDatos" class="btn btn-primary" value="Datos Personales"/>
                     <h:button id="botonOferta" class="btn btn-primary" value="Crear Oferta"/>-->
                 </div>
@@ -101,9 +105,15 @@
                         if ($("#botonDatos").hasClass("hidden")) {
                             $("#botonDatos").removeClass("hidden");
                         }
+                        if ($("#botonPromo").hasClass("hidden")) {
+                            $("#botonPromo").removeClass("hidden");
+                        }
                         if ($("#oferta").hasClass("hidden")) {
                             if (!$("#datos").hasClass("hidden")) {
                                 $("#datos").addClass("hidden");
+                            }
+                            if (!$("#promocion").hasClass("hidden")) {
+                                $("#promocion").addClass("hidden");
                             }
                             $("#oferta").removeClass("hidden");
                         }
@@ -113,11 +123,35 @@
                         if ($("#botonOferta").hasClass("hidden")) {
                             $("#botonOferta").removeClass("hidden");
                         }
+                        if ($("#botonPromo").hasClass("hidden")) {
+                            $("#botonPromo").removeClass("hidden");
+                        }
                         if ($("#datos").hasClass("hidden")) {
                             if (!$("#oferta").hasClass("hidden")) {
                                 $("#oferta").addClass("hidden");
                             }
+                            if (!$("#promocion").hasClass("hidden")) {
+                                $("#promocion").addClass("hidden");
+                            }
                             $("#datos").removeClass("hidden");
+                        }
+                    });
+                    $("#botonPromo").click(function () {
+                        $("#botonPromo").addClass("hidden");
+                        if ($("#botonOferta").hasClass("hidden")) {
+                            $("#botonOferta").removeClass("hidden");
+                        }
+                        if ($("#botonDatos").hasClass("hidden")) {
+                            $("#botonDatos").removeClass("hidden");
+                        }
+                        if ($("#promocion").hasClass("hidden")) {
+                            if (!$("#oferta").hasClass("hidden")) {
+                                $("#oferta").addClass("hidden");
+                            }
+                            if (!$("#datos").hasClass("hidden")) {
+                                $("#datos").addClass("hidden");
+                            }
+                            $("#promocion").removeClass("hidden");
                         }
                     });
                 </script>

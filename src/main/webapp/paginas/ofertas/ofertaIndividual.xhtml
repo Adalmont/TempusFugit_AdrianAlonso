@@ -17,17 +17,20 @@
     <h:body>
         <ui:composition template="/resources/plantilla/plantilla.xhtml">
             <ui:define name="contenido">
-                <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarTabla">
-                    <h:outputLabel value="Ofertante: "/>
-                    <h:outputText value="#{oferta.usuario.nombre} #{oferta.usuario.apellidos}"/>
-                    <h:outputLabel value="Nombre: "/>
-                    <h:outputText value="#{oferta.nombre}"/>
-                    <h:outputLabel value="Descripcion: "/>
-                    <h:outputText value="#{oferta.descripcion}"/>
-                    <h:outputLabel value="Disponibilidad: "/>
-                    <h:outputText value="desde el #{oferta.fechaInicio} hasta el #{oferta.fechaFin}"/>
-                    <h:outputLabel value="Categoria: "/>
-                    <h:outputText value="#{oferta.subcategoria.categoria.nombre}: #{oferta.subcategoria.nombre}"/>
+                <c:choose>
+                        <c:when test="#{oferta.imgPrincipal==null}">
+                            <h:graphicImage class="centrarImg" alt="foto de perfil" library="imagenes" value="/resources/imagenes/ofertas/serviciogenerico.jpg" height="120" width="120"/><br/><br/>
+                        </c:when>
+                        <c:otherwise>
+                            <h:graphicImage class="centrarImg" alt="foto de perfil" library="imagenes" value="/resources/imagenes/ofertas/#{oferta.imgPrincipal}" height="120" width="120"/><br/><br/>
+                        </c:otherwise>
+                    </c:choose>
+                <h:panelGrid columns="2" border="1" cellspacing="2" class="centrarTabla">
+                    <h:outputText value="#{oferta.usuario.nombre} #{oferta.usuario.apellidos}"/><br/>
+                    <h:outputText value="#{oferta.nombre}"/><br/>
+                    <h:outputText value="#{oferta.descripcion}"/><br/>
+                    <h:outputText value="desde el #{oferta.fechaInicio} hasta el #{oferta.fechaFin}"/><br/>
+                    <h:outputText value="#{oferta.subcategoria.categoria.nombre}: #{oferta.subcategoria.nombre}"/><br/>
                 </h:panelGrid>
 
                 <div class="col-lg-12">

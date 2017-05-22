@@ -6,4 +6,5 @@ donde mostrara los mensajes pertinentes a cada oferta, aunque aun no esta implem
 una oferta concreta para visualizar mas informacion sobre ella - en la pagina de cada oferta se ha añadido una seccion de mensajes, que permite ver los mensajes dirigidos a esa
 oferta en concreto. Los mensajes privados solo pueden visualizarse por el creador de la oferta y el escritor del mensaje. La creacion de mensajes desde la pagina (con el boton 
 "crear mensaje") aun no es funcional. |||| 16/05/2017: Seccion de mensajes funcional. Implementada la seccion del buscador (Solo pueden acceder los usuarios registrados). Seccion
-multimedia aun en construccion
+multimedia aun en construccion. |||| 23/05/2017: Subida de Imagenes implementada. Ya se pueden subir avatares para los usuarios e imagenes para las ofertas. Contraseñas encriptadas.
+Implementados los codigos promocionales. Contratacion de aun ofertas en construccion. Añado documentos de texto con los usuarios y como hacer funcionar la subida de imagenes.

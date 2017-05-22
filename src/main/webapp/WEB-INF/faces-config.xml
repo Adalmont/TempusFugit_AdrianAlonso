@@ -11,12 +11,12 @@
             <to-view-id>/index.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
-            <from-action>#{usuario.addUsuario(usuario)}</from-action>
+            <from-action>#{usuario.addUsuario()}</from-action>
             <from-outcome>true</from-outcome>
             <to-view-id>/index.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
-            <from-action>#{usuario.addUsuario(usuario)}</from-action>
+            <from-action>#{usuario.addUsuario()}</from-action>
             <from-outcome>false</from-outcome>
             <to-view-id>/paginas/registro-login/registro.xhtml</to-view-id>
         </navigation-case>
@@ -47,6 +47,14 @@
         </navigation-case>
         <navigation-case>
             <from-action>#{oferta.addOferta()}</from-action>
+            <to-view-id>/paginas/perfilUsuario/perfil.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{usuario.subirAvatar()}</from-action>
+            <to-view-id>/paginas/perfilUsuario/perfil.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{usuario.comprobarCodigo()}</from-action>
             <to-view-id>/paginas/perfilUsuario/perfil.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule> 

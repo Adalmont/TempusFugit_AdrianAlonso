@@ -5,9 +5,16 @@
  */
 package es.adrian.beans;
 
+import static es.adrian.beans.Usuario.subirImagen;
 import es.adrian.dao.IGenericoDAO;
 import es.adrian.daofactory.DAOFactory;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -17,6 +24,8 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.*;
 import javax.faces.context.FacesContext;
 import javax.persistence.*;
+import javax.servlet.http.Part;
+import org.apache.commons.io.FilenameUtils;
 import org.hibernate.HibernateException;
 
 /**
@@ -46,10 +55,13 @@ public class Oferta implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date fechaFin;
     private String estado;
+    private String imgPrincipal;
     @Transient
     private String mensaje;
     @Transient
     private Subcategoria subcatBusqueda;
+    @Transient
+    private Part imgSubir;
 
     public int getIdOferta() {
         return idOferta;
@@ -115,6 +127,14 @@ public class Oferta implements Serializable {
         this.estado = estado;
     }
 
+    public String getImgPrincipal() {
+        return imgPrincipal;
+    }
+
+    public void setImgPrincipal(String imgPrincipal) {
+        this.imgPrincipal = imgPrincipal;
+    }
+
     public String getMensaje() {
         return mensaje;
     }
@@ -130,6 +150,15 @@ public class Oferta implements Serializable {
     public void setSubcatBusqueda(Subcategoria subcatBusqueda) {
         this.subcatBusqueda = subcatBusqueda;
     }
+
+    public Part getImgSubir() {
+        return imgSubir;
+    }
+
+    public void setImgSubir(Part imgSubir) {
+        this.imgSubir = imgSubir;
+    }
+    
 
     public ArrayList<Oferta> getOfertas() {
         ArrayList<Oferta> listaOfertas = new ArrayList();
@@ -157,12 +186,16 @@ public class Oferta implements Serializable {
             Logger.getLogger(Oferta.class.getName()).log(Level.SEVERE, null, he);
         }
     }*/
-    public String addOferta() {
+    public String addOferta() throws IOException {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
             IGenericoDAO gdao = daof.getGenericoDAO();
+            
             this.estado = "a";
             gdao.add(this);
+            if (this.imgSubir!=null){
+                subirImagenPrincipal();
+            }
             limpiarDatos();
             this.mensaje = "Oferta creada";
             return "true";
@@ -186,6 +219,7 @@ public class Oferta implements Serializable {
             this.fechaInicio = ofertaElegida.fechaInicio;
             this.subcategoria = ofertaElegida.subcategoria;
             this.usuario = ofertaElegida.usuario;
+            this.imgPrincipal = ofertaElegida.imgPrincipal;
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("ofertaElegida", this);
             return "true";
         } else {
@@ -202,7 +236,41 @@ public class Oferta implements Serializable {
         this.fechaInicio = null;
         this.subcategoria = null;
         this.mensaje = null;
-        this.subcatBusqueda=null;
+        this.subcatBusqueda = null;
+        this.imgSubir= null;
+        this.imgPrincipal= null;
     }
 
+    public String updateOferta() {
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            gdao.update(this);
+            return "true";
+
+        } catch (HibernateException he) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
+            return "false";
+        }
+    }
+
+    public void subirImagenPrincipal() throws IOException {
+        setImgPrincipal(subirImagen("ofertas", this.imgSubir, String.valueOf(this.idOferta)));
+        updateOferta();
+    }
+
+    static String subirImagen(String carpeta, Part archivo, String nombre) throws IOException {
+        String filename = FilenameUtils.getBaseName(nombre);
+        String extension = FilenameUtils.getExtension(".jpg");
+        Path fichero = Paths.get("C:\\NetBeansProjects\\TempusFugitAdrianAlonso\\src\\main\\webapp\\resources\\imagenes\\ofertas" + System.getProperty("file.separator") + filename + "." + extension);
+        Path file = Files.createFile(fichero);
+        try (InputStream input = archivo.getInputStream()) {
+            Files.copy(input, file, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        System.out.println("Imagen subida a: " + file);
+
+        return file.getFileName().toString();
+
+    }
 }
