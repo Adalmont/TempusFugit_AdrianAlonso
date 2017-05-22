@@ -42,13 +42,16 @@ CREATE TABLE IF NOT EXISTS `ciudades` (
   `latitud` decimal(10,8) DEFAULT '0.00000000',
   `longitud` decimal(11,8) DEFAULT '0.00000000',
   PRIMARY KEY (`idCiudad`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla tempusfugit.ciudades: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla tempusfugit.ciudades: ~3 rows (aproximadamente)
 DELETE FROM `ciudades`;
 /*!40000 ALTER TABLE `ciudades` DISABLE KEYS */;
 INSERT INTO `ciudades` (`idCiudad`, `nombre`, `estado`, `latitud`, `longitud`) VALUES
-	(1, 'Ninguna', 'a', 0.00000000, 0.00000000);
+	(1, '--Elige Ciudad--', 'a', 0.00000000, 0.00000000),
+	(2, 'Mérida', 'a', 38.92414370, -6.33839820),
+	(3, 'Cáceres', 'a', 39.47529340, -6.37250000),
+	(4, 'Badajoz', 'a', 38.87944950, -6.97065350);
 /*!40000 ALTER TABLE `ciudades` ENABLE KEYS */;
 
 -- Volcando estructura para tabla tempusfugit.horarios
@@ -84,17 +87,13 @@ CREATE TABLE IF NOT EXISTS `mensajes` (
   KEY `FK_servicioReceptor_idx` (`idOferta`),
   CONSTRAINT `FK_emisor-usuario` FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`idUsuario`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_servicioReceptor` FOREIGN KEY (`idOferta`) REFERENCES `ofertas` (`idOferta`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla tempusfugit.mensajes: ~5 rows (aproximadamente)
+-- Volcando datos para la tabla tempusfugit.mensajes: ~1 rows (aproximadamente)
 DELETE FROM `mensajes`;
 /*!40000 ALTER TABLE `mensajes` DISABLE KEYS */;
 INSERT INTO `mensajes` (`idMensaje`, `idUsuario`, `idOferta`, `tipo`, `asunto`, `contenido`, `fecha`, `leido`) VALUES
-	(12, 23, 2, 'pu', 'Prueba de Mensaje', 'Mensaje Publico de Dante', '2017-05-15 00:49:32', 'n'),
-	(13, 23, 2, 'pri', 'Prueba de Mensaje Privado', 'Este Mensaje solo lo pueden visualizar Dante y Ludwig', '2017-05-15 00:50:02', 'n'),
-	(14, 23, 3, 'pri', 'Prueba Mensaje Privado', 'Este Mensaje solo lo pueden visualizar Dante y Ahab', '2017-05-15 00:50:37', 'n'),
-	(15, 13, 2, 'pu', 'Prueba de Mensaje', 'Mensaje Publico de Ahab', '2017-05-15 00:51:27', 'n'),
-	(16, 13, 2, 'pri', 'Prueba de Mensaje Privado', 'Este mensaje solo lo pueden visualizar Ahab y Ludwig', '2017-05-15 00:51:49', 'n');
+	(20, 34, 17, 'pu', 'Prueba de mensaje', 'mensaje de prueba', '2017-05-23 00:42:45', 'n');
 /*!40000 ALTER TABLE `mensajes` ENABLE KEYS */;
 
 -- Volcando estructura para tabla tempusfugit.multimedia
@@ -123,21 +122,21 @@ CREATE TABLE IF NOT EXISTS `ofertas` (
   `fechaInicio` date NOT NULL,
   `fechaFin` date NOT NULL,
   `estado` set('p','a') DEFAULT 'p',
+  `imgPrincipal` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`idOferta`),
   KEY `FK_servicio-subcategoria_idx` (`idSubcategoria`),
   KEY `FK_oferta-usuario_idx` (`idUsuario`),
   CONSTRAINT `FK_oferta-usuario` FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`idUsuario`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_servicio-subcategoria` FOREIGN KEY (`idSubcategoria`) REFERENCES `subcategorias` (`idSubcategoria`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla tempusfugit.ofertas: ~4 rows (aproximadamente)
+-- Volcando datos para la tabla tempusfugit.ofertas: ~3 rows (aproximadamente)
 DELETE FROM `ofertas`;
 /*!40000 ALTER TABLE `ofertas` DISABLE KEYS */;
-INSERT INTO `ofertas` (`idOferta`, `nombre`, `descripcion`, `idSubcategoria`, `idUsuario`, `fechaInicio`, `fechaFin`, `estado`) VALUES
-	(2, 'Instalacion de red electrica', 'Me ofrezco ha instalar una red electrica domestica', 4, 22, '2017-01-07', '2017-01-10', 'a'),
-	(3, 'Reparacion de porches', 'Reparo porches de patios en viviendas', 1, 13, '2017-01-06', '2017-01-12', 'a'),
-	(5, 'Instalación de cuadros eléctricos', 'Instalo, reviso y mantengo cuadros eléctricos en viviendas', 4, 23, '2017-01-06', '2017-01-18', 'a'),
-	(7, 'Reparacion de ordenadores', 'Reparo hardware de ordenadores, tanto de mesa como portatiles', 3, 23, '2017-01-19', '2017-01-01', 'a');
+INSERT INTO `ofertas` (`idOferta`, `nombre`, `descripcion`, `idSubcategoria`, `idUsuario`, `fechaInicio`, `fechaFin`, `estado`, `imgPrincipal`) VALUES
+	(15, 'Reparacion de baldosas', 'Reparo baldosas', 1, 31, '2017-01-22', '2017-01-29', 'a', '15.jpg'),
+	(16, 'Instalacion de Red Eléctrica', 'Me ofrezco a instalar la red electrica de un domicilio', 4, 30, '2017-01-23', '2017-01-29', 'a', '16.jpg'),
+	(17, 'Reparacion de Portátiles', 'Reparo ordenadores portátiles', 3, 33, '2017-01-23', '2017-01-29', 'a', '17.jpg');
 /*!40000 ALTER TABLE `ofertas` ENABLE KEYS */;
 
 -- Volcando estructura para tabla tempusfugit.promocion
@@ -146,11 +145,13 @@ CREATE TABLE IF NOT EXISTS `promocion` (
   `codigo` varchar(45) NOT NULL,
   `saldo` int(11) NOT NULL,
   PRIMARY KEY (`idPromocion`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla tempusfugit.promocion: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla tempusfugit.promocion: ~1 rows (aproximadamente)
 DELETE FROM `promocion`;
 /*!40000 ALTER TABLE `promocion` DISABLE KEYS */;
+INSERT INTO `promocion` (`idPromocion`, `codigo`, `saldo`) VALUES
+	(1, 'TempusFugit', 300);
 /*!40000 ALTER TABLE `promocion` ENABLE KEYS */;
 
 -- Volcando estructura para tabla tempusfugit.servicios
@@ -214,15 +215,18 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   UNIQUE KEY `email` (`email`),
   KEY `FK_usuarios-ciudad_idx` (`idCiudad`),
   CONSTRAINT `FK_usuarios-ciudad` FOREIGN KEY (`idCiudad`) REFERENCES `ciudades` (`idCiudad`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla tempusfugit.usuarios: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla tempusfugit.usuarios: ~6 rows (aproximadamente)
 DELETE FROM `usuarios`;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
 INSERT INTO `usuarios` (`idUsuario`, `nombre`, `apellidos`, `clave`, `email`, `idCiudad`, `saldo`, `tipo`, `fechaAlta`, `avatar`) VALUES
-	(13, 'Ahab', 'Old Thunder', 'mobydick', 'pequod@mail.com', 1, 0, 'n', '2017-04-25 00:57:12', NULL),
-	(22, 'Ludwig', 'van Beethoven', 'quintasinfonia', 'ludwig@mail.com', 1, 0, 'n', '2017-05-01 01:22:41', NULL),
-	(23, 'Dante', 'Alighieri', 'divinacomedia', 'dante@mail.com', 1, 0, 'n', '2017-05-07 19:00:12', NULL);
+	(28, 'William', 'Shakespeare', '6jWWE5UwsqvnCJCCq1fsvQ==', 'william@mail.com', 2, 0, 'n', '2017-05-22 00:32:43', '28.jpg'),
+	(30, 'Prueba', 'Mérida', '8CCSeUZ8LdrRBMKP29JMvg==', 'pruebam@mail.com', 2, 300, 'n', '2017-05-22 15:42:33', '30.jpg'),
+	(31, 'Prueba', 'Badajoz', 'qqmH8ZulBdM//2+ruaDKVg==', 'pruebab@mail.com', 4, 0, 'n', '2017-05-22 15:57:21', '31.jpg'),
+	(32, 'Albert', 'Einstein', 'sxoKNJaJxUBsAjHtHKAiBA==', 'albert@mail.com', 4, 0, 'n', '2017-05-23 00:37:03', '32.jpg'),
+	(33, 'Prueba', 'Cáceres', '96VLb4m9D4tqe7bYtpyTUA==', 'pruebac@mail.com', 3, 0, 'n', '2017-05-23 00:38:49', '33.jpg'),
+	(34, 'Friedrich Wilhem', 'Nietzsche', 'gmIBzZi2glp9hxCfIjK/IA==', 'nitz@mail.com', 3, 300, 'n', '2017-05-23 00:41:36', '34.jpg');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
