@@ -1,0 +1,5 @@
+Como la subida de imagenes se realiza en el servidor y no  en la base de datos, la aplicacion subre las imagenes a la ruta absoluta de la aplicacion
+en mi ordenador, por lo que para que la subida de imagenes funcione cuando la aplicacion se despliegue desde otro equipo hay que modificar el metodo
+"subirImagen()" de los beans de Usuario y Oferta, en concreto la linea
+"Path fichero = Paths.get("C:\\NetBeansProjects\\TempusFugitAdrianAlonso\\src\\main\\webapp\\resources\\imagenes\\avatares" + System.getProperty("file.separator") + filename + "." + extension);"
+linea numero 265 en Oferta y 329 en Usuario, indicando la ruta en la que se encuentre la aplicacion
