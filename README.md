@@ -8,3 +8,6 @@ oferta en concreto. Los mensajes privados solo pueden visualizarse por el creado
 "crear mensaje") aun no es funcional. |||| 16/05/2017: Seccion de mensajes funcional. Implementada la seccion del buscador (Solo pueden acceder los usuarios registrados). Seccion
 multimedia aun en construccion. |||| 23/05/2017: Subida de Imagenes implementada. Ya se pueden subir avatares para los usuarios e imagenes para las ofertas. Contraseñas encriptadas.
 Implementados los codigos promocionales. Contratacion de aun ofertas en construccion. Añado documentos de texto con los usuarios y como hacer funcionar la subida de imagenes.
+|||| 30/05/2017: Modifica la creacion de ofertas: Ahora la gestion de ofertas cuenta con su propia seccion dentro del perfil de usuario (en construccion, solo funcional la creacion
+de ofertas). Modificada la creacion de ofertas: ahora se debe elegir un horario al crear la oferta (De momento funcional solo la opcion de Horario Unico). Ahora los horarios se muestran
+en la pagina de la oferta individual, pero la contratacion de horarios aun no funciona correctamente. Detectado un error al crear la oferta (El mes de la fecha siempre es enero).

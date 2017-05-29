@@ -18,13 +18,13 @@
         <ui:composition template="/resources/plantilla/plantilla.xhtml">
             <ui:define name="contenido">
                 <c:choose>
-                        <c:when test="#{oferta.imgPrincipal==null}">
-                            <h:graphicImage class="centrarImg" alt="foto de perfil" library="imagenes" value="/resources/imagenes/ofertas/serviciogenerico.jpg" height="120" width="120"/><br/><br/>
-                        </c:when>
-                        <c:otherwise>
-                            <h:graphicImage class="centrarImg" alt="foto de perfil" library="imagenes" value="/resources/imagenes/ofertas/#{oferta.imgPrincipal}" height="120" width="120"/><br/><br/>
-                        </c:otherwise>
-                    </c:choose>
+                    <c:when test="#{oferta.imgPrincipal==null}">
+                        <h:graphicImage class="centrarImg" alt="foto de perfil" library="imagenes" value="/resources/imagenes/ofertas/serviciogenerico.jpg" height="120" width="120"/><br/><br/>
+                    </c:when>
+                    <c:otherwise>
+                        <h:graphicImage class="centrarImg" alt="foto de perfil" library="imagenes" value="/resources/imagenes/ofertas/#{oferta.imgPrincipal}" height="120" width="120"/><br/><br/>
+                    </c:otherwise>
+                </c:choose>
                 <h:panelGrid columns="2" border="1" cellspacing="2" class="centrarTabla">
                     <h:outputText value="#{oferta.usuario.nombre} #{oferta.usuario.apellidos}"/><br/>
                     <h:outputText value="#{oferta.nombre}"/><br/>
@@ -32,8 +32,29 @@
                     <h:outputText value="desde el #{oferta.fechaInicio} hasta el #{oferta.fechaFin}"/><br/>
                     <h:outputText value="#{oferta.subcategoria.categoria.nombre}: #{oferta.subcategoria.nombre}"/><br/>
                 </h:panelGrid>
-
-                <div class="col-lg-12">
+                <div class="col-lg-12 hidden" id="seccionContratar">
+                    <h1 class="centrar colorAzul">Horarios</h1>
+                    <c:forEach var="horarioActual" items="#{horario.getHorarios(oferta.idOferta)}">
+                        <c:if test="#{horarioActual.estado eq 'l'}">
+                            <div class="col-lg-4">
+                                <h:form>
+                                    <h:panelGrid class="centrarTabla" columns="2" border="0" cellspacing="2">
+                                        <h:outputLabel value="Fecha: "/>
+                                        <h:outputText class="centrar" value="#{horarioActual.fecha}"/>
+                                        <h:outputLabel value="Hora de Inicio: "/>
+                                        <h:outputText class="centrar" value="#{horarioActual.horaInicio}"/>
+                                        <h:outputLabel value="Hora de Fin: "/>
+                                        <h:outputText value=" #{horarioActual.horaFin}"/>
+                                    </h:panelGrid>
+                                    <c:if test="#{usuario.idUsuario!=oferta.usuario.idUsuario}">
+                                        <h:commandButton class="btn btn-primary" value="Contratar Horario" action="#{servicio.addServicio(oferta, horarioActual, usuario)}"/>
+                                    </c:if>
+                                </h:form>
+                            </div>
+                        </c:if>
+                    </c:forEach>
+                </div>
+                <div class="col-lg-12 hidden" id="seccionMensajes">
                     <h1 class="centrar colorAzul">Mensajes</h1>
                     <c:forEach var="mensajeActual" items="#{mensaje.getMensajes(oferta.idOferta)}">
                         <c:if test="#{mensajeActual.oferta.idOferta==oferta.idOferta}">
@@ -85,6 +106,13 @@
                             <button class="btn btn-primary centrarTabla" id="botonMensaje">Añadir Mensaje</button>
                         </div>
                     </c:if>
+
+                </div>
+                <div class="col-lg-12">
+                    <br/>
+                    <button class="btn btn-primary centrarTabla" id="botonMostrarMen">Mostrar Mensajes</button>
+                    <br/>
+                    <button class="btn btn-primary centrarTabla" id="botonContratar">Mostrar Horarios</button>
                 </div>
                 <script>
                     $("#botonMensaje").click(function () {
@@ -92,6 +120,24 @@
                             $("#crearMensaje").removeClass("hidden");
                         } else {
                             $("#crearMensaje").addClass("hidden");
+                        }
+                    });
+                    $("#botonMostrarMen").click(function () {
+                        if ($("#seccionMensajes").hasClass("hidden")) {
+                            $("#seccionMensajes").removeClass("hidden");
+                            $("#botonMostrarMen").html("Ocultar Mensajes");
+                        } else {
+                            $("#seccionMensajes").addClass("hidden");
+                            $("#botonMostrarMen").html("Mostrar Mensajes");
+                        }
+                    });
+                    $("#botonContratar").click(function () {
+                        if ($("#seccionContratar").hasClass("hidden")) {
+                            $("#seccionContratar").removeClass("hidden");
+                            $("#botonContratar").html("Ocultar Horarios");
+                        } else {
+                            $("#seccionContratar").addClass("hidden");
+                            $("#botonContratar").html("Mostrar Horarios");
                         }
                     });
                 </script>

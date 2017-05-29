@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:of="http://omnifaces.org/functions">
+    <h:head>
+        <title>Facelet Title</title>
+
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="estilos.css"/> 
+    </h:head>
+    <h:body>
+        <ui:composition template="/resources/plantilla/plantilla.xhtml">
+            <ui:define name="cabeceraPersonalizada">
+                <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+                <link rel="stylesheet" href="/resources/demos/style.css"/>
+                <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+                <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+                <script>
+                    $(function () {
+                        $("#slider-range").slider({
+                            range: true,
+                            min: 0,
+                            max: 1440,
+                            step: 30,
+                            values: [90, 300],
+                            slide: function (event, ui) {
+                                var minHours = Math.floor(ui.values[0] / 60);
+                                var minMinutes = ui.values[0] - (minHours * 60);
+                                var maxHours = Math.floor(ui.values[1] / 60);
+                                var maxMinutes = ui.values[1] - (maxHours * 60);
+                                if (minHours.toString().length == 1)
+                                    minHours = '0' + minHours;
+                                if (minMinutes.toString().length == 1)
+                                    minMinutes = '0' + minMinutes;
+                                if (maxHours.toString().length == 1)
+                                    maxHours = '0' + maxHours;
+                                if (maxMinutes.toString().length == 1)
+                                    maxMinutes = '0' + maxMinutes;
+
+                                $('#amount').val(minHours + ':' + minMinutes + " - " + maxHours + " : " + maxMinutes);
+                                $('.minMin').val(ui.values[0]);
+                                $('.minMax').val(ui.values[1]);
+                            }
+                        });
+                    });
+                </script>
+            </ui:define>
+            <ui:define name="contenido">
+                <f:event type="preRenderView" listener="#{oferta.limpiarDatos()}"/>
+
+                <div class="row col-lg-12 centrar" id="oferta">
+                    <h:form id="formulario" class="centrar" enctype="multipart/form-data">
+                        <h:outputText class="centrar mensajeOferta colorAzulOscuro" value="#{oferta.mensaje}"/>
+                        <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarTabla" >
+                            <h:outputLabel value="Imagen de la oferta: "/>
+                            <h:inputFile value="#{oferta.imgSubir}"></h:inputFile>
+                            <h:outputLabel value="Nombre: "/>
+                            <h:inputText value="#{oferta.nombre}" pt:placeholder="Nombre de la Oferta" pt:required="true"/>
+                            <h:outputLabel value="Descripción: "/>
+                            <h:inputText value="#{oferta.descripcion}" pt:placeholder="Descripcion de la Oferta" pt:required="true"/>
+                            <h:outputLabel value="Categoria: "/>
+                            <h:selectOneMenu value="#{oferta.subcategoria}" converter="omnifaces.SelectItemsConverter">
+                                <f:selectItems value="#{subcategoria.subcat}" var="subc" itemValue="#{subc}" itemLabel="#{subc.nombre}"/>
+                            </h:selectOneMenu>
+                            <h:outputLabel value="Fecha Inicio: "/>
+                            <h:inputText value="#{oferta.fechaInicio}" pt:pattern="[0-9]{4}.(0[1-9]|1[012]).(0[1-9]|1[0-9]|2[0-9]|3[01])" pt:placeholder="yyyy-mm-dd" pt:required="true">
+                                <f:convertDateTime pattern="yyyy-mm-dd"/>
+                            </h:inputText>
+                            <h:outputLabel value="Fecha Fin: "/>
+                            <h:inputText value="#{oferta.fechaFin}" pt:pattern="[0-9]{4}.(0[1-9]|1[012]).(0[1-9]|1[0-9]|2[0-9]|3[01])" pt:placeholder="yyyy-mm-dd" pt:required="true">
+                                <f:convertDateTime pattern="yyyy-mm-dd"/>
+                            </h:inputText>
+                            <h:selectOneRadio value="#{oferta.opcion}"  class="opcionFecha" id="opcionFecha">
+                                <f:selectItem pt:selected="true" itemValue="unica" itemLabel="Horario Unico"/>
+                                <f:selectItem itemValue="multiple" itemLabel="Horario Personalizado"/>
+                            </h:selectOneRadio>
+
+
+                        </h:panelGrid>
+                            <label for="amount">Horario:</label>
+                            <input type="text" id="amount" readonly="true" style="border:0; color:#f6931f; font-weight:bold;"/>
+                            <h:inputText value="#{oferta.horaInicio}" styleClass="minMin hidden"/>
+                            <h:inputText value="#{oferta.horaFin}" styleClass="minMax hidden"/>
+                            <div id="slider-range"></div>
+                        <h:commandButton class="btn btn-primary" value="Aceptar" action="#{oferta.crearOferta()}"/>
+                        <br/>
+                    </h:form>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

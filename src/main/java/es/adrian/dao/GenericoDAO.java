@@ -34,6 +34,7 @@ public class GenericoDAO<T> implements IGenericoDAO<T> {
     
     private void manejaExcepcion(HibernateException he) throws HibernateException {
         sesion.getTransaction().rollback();
+        Logger.getLogger(GenericoDAO.class.getName()).log(Level.SEVERE, null, he);
         throw he;
     } 
 

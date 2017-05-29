@@ -5,7 +5,6 @@
  */
 package es.adrian.beans;
 
-import static es.adrian.beans.Usuario.subirImagen;
 import es.adrian.dao.IGenericoDAO;
 import es.adrian.daofactory.DAOFactory;
 import java.io.IOException;
@@ -15,6 +14,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -62,6 +63,12 @@ public class Oferta implements Serializable {
     private Subcategoria subcatBusqueda;
     @Transient
     private Part imgSubir;
+    @Transient
+    private int horaInicio;
+    @Transient
+    private int horaFin;
+    @Transient
+    private String opcion;
 
     public int getIdOferta() {
         return idOferta;
@@ -158,7 +165,30 @@ public class Oferta implements Serializable {
     public void setImgSubir(Part imgSubir) {
         this.imgSubir = imgSubir;
     }
-    
+
+    public int getHoraInicio() {
+        return horaInicio;
+    }
+
+    public void setHoraInicio(int horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+
+    public int getHoraFin() {
+        return horaFin;
+    }
+
+    public void setHoraFin(int horaFin) {
+        this.horaFin = horaFin;
+    }
+
+    public String getOpcion() {
+        return opcion;
+    }
+
+    public void setOpcion(String opcion) {
+        this.opcion = opcion;
+    }
 
     public ArrayList<Oferta> getOfertas() {
         ArrayList<Oferta> listaOfertas = new ArrayList();
@@ -175,7 +205,6 @@ public class Oferta implements Serializable {
         }
         return listaOfertas;
     }
-
     /*public ArrayList<Oferta> getOfertasByCat() {
         ArrayList<Oferta> listaOfertas = new ArrayList();
         try {
@@ -190,13 +219,12 @@ public class Oferta implements Serializable {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
             IGenericoDAO gdao = daof.getGenericoDAO();
-            
+
             this.estado = "a";
             gdao.add(this);
-            if (this.imgSubir!=null){
+            if (this.imgSubir != null) {
                 subirImagenPrincipal();
             }
-            limpiarDatos();
             this.mensaje = "Oferta creada";
             return "true";
         } catch (HibernateException e) {
@@ -205,6 +233,47 @@ public class Oferta implements Serializable {
             this.mensaje = "Error al crear la Oferta";
             return "false";
         }
+    }
+
+    public String crearOferta() throws IOException {
+        String resultado = null;
+        if (this.opcion!=null){
+        addOferta();
+        System.out.println("HORA AL CREAR: "+this.horaInicio+ " "+ this.horaFin);
+        }else{
+            return "false";
+        }
+        if (this.opcion.equals("unica")) {
+            if (this.horaFin - this.horaInicio > 480) {
+                resultado = "false";
+                this.mensaje = "No se pueden superar las 8 horas de trabajo";
+                deleteOferta();
+            } else {
+                ArrayList<LocalDate> fechas = new ArrayList();
+                LocalDate inicio = this.fechaInicio.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                while (!inicio.isAfter(this.fechaFin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())) {
+                    fechas.add(inicio);
+                    inicio = inicio.plusDays(1);
+                }
+                for (LocalDate fechaActual : fechas) {
+                    Horario horario = new Horario();
+                    horario.setFecha(java.sql.Date.valueOf(fechaActual));
+                    horario.setHoraInicio(this.horaInicio);
+                    horario.setHoraFin(this.horaFin);
+                    horario.setOferta(this);
+                    horario.addHorario();
+                    System.out.println("HORARIO AL CREAR: "+this.horaInicio+ " "+ this.horaFin + "\\\\"+horario.getHoraInicio()+" "+horario.getHoraFin());
+                }
+                limpiarDatos();
+                resultado = "creada";
+            }
+        }
+        if (this.opcion.equals("multiple")) {
+            resultado = "false";
+            deleteOferta();
+        }
+
+        return resultado;
     }
 
     /*Este metodo recibe los datos de una oferta en la lista de ofertas y la pasa al bean para mostrarla en la pagina de
@@ -237,8 +306,18 @@ public class Oferta implements Serializable {
         this.subcategoria = null;
         this.mensaje = null;
         this.subcatBusqueda = null;
-        this.imgSubir= null;
-        this.imgPrincipal= null;
+        this.imgSubir = null;
+        this.imgPrincipal = null;
+    }
+
+    public void deleteOferta() {
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            gdao.delete(this);
+        } catch (HibernateException e) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, e);
+        }
     }
 
     public String updateOferta() {

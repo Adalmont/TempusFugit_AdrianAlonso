@@ -46,10 +46,6 @@
             <to-view-id>/index.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
-            <from-action>#{oferta.addOferta()}</from-action>
-            <to-view-id>/paginas/perfilUsuario/perfil.xhtml</to-view-id>
-        </navigation-case>
-        <navigation-case>
             <from-action>#{usuario.subirAvatar()}</from-action>
             <to-view-id>/paginas/perfilUsuario/perfil.xhtml</to-view-id>
         </navigation-case>
@@ -83,6 +79,10 @@
             <from-outcome>false</from-outcome>
             <to-view-id>/paginas/ofertas/ofertaIndividual.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-action>#{servicio.addServicio(oferta, horarioActual, usuario)}</from-action>
+            <to-view-id>/paginas/ofertas/ofertaIndividual.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule> 
     <navigation-rule>
         <from-view-id>/paginas/buscador/buscador.xhtml</from-view-id>
@@ -97,5 +97,18 @@
             <from-action>buscar</from-action>
             <to-view-id>/paginas/buscador/resultadosBusqueda.xhtml</to-view-id>
         </navigation-case>
-    </navigation-rule> 
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/paginas/gestionOfertas/crearOferta.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{oferta.crearOferta()}</from-action>
+            <from-outcome>creada</from-outcome>
+            <to-view-id>/paginas/gestionOfertas/principal.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{oferta.crearOferta()}</from-action>
+            <from-outcome>false</from-outcome>
+            <to-view-id>/paginas/gestionOfertas/principal.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>  
 </faces-config>

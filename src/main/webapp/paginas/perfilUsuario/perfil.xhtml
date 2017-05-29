@@ -21,42 +21,6 @@
             <ui:define name="contenido">
                 <f:event type="preRenderView" listener="#{oferta.limpiarDatos()}"/>
                 <h1 class="centrar colorAzulOscuro">Perfil de #{usuario.nombre} #{usuario.apellidos}</h1>
-                <div class="row col-lg-12 centrar hidden" id="oferta">
-                    <!--En este formulario pueden crearse las ofertas para la pagina.
-                    La seleccion de categorias se hace llamando a un metodo tipo ArrayList de Subcategorias en el bean de Oferta.
-                    Para que el valor de cada objeto del Select sea un objeto de tipo Subcategoria utilizo un convertidor de
-                    la libreria omnifaces.
-                    Para las fechas utilizo un patron de html5 y un convertidor de jsf, lo que permite que pase al bean como
-                    un objeto de tipo Date.-->
-                    <h:form id="formulario" class="centrar" enctype="multipart/form-data">
-                        <h:outputText class="centrar mensajeOferta colorAzulOscuro" value="#{oferta.mensaje}"/>
-                        <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarTabla" >
-                            <h:outputLabel value="Imagen de la oferta: "/>
-                            <h:inputFile value="#{oferta.imgSubir}"></h:inputFile>
-                            <h:outputLabel value="Nombre: "/>
-                            <h:inputText value="#{oferta.nombre}" pt:placeholder="Nombre de la Oferta" pt:required="true"/>
-                            <h:outputLabel value="Descripción: "/>
-                            <h:inputText value="#{oferta.descripcion}" pt:placeholder="Descripcion de la Oferta" pt:required="true"/>
-                            <h:outputLabel value="Categoria: "/>
-                            <h:selectOneMenu value="#{oferta.subcategoria}" converter="omnifaces.SelectItemsConverter">
-                                <f:selectItems value="#{subcategoria.subcat}" var="subc" itemValue="#{subc}" itemLabel="#{subc.nombre}"/>
-                            </h:selectOneMenu>
-                            <h:outputLabel value="Fecha Inicio: "/>
-                            <h:inputText value="#{oferta.fechaInicio}" pt:pattern="(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}" pt:placeholder="dd-mm-yyyy" pt:required="true">
-                                <f:convertDateTime pattern="dd-mm-yyyy"/>
-                            </h:inputText>
-                            <h:outputLabel value="Fecha Fin: "/>
-                            <h:inputText value="#{oferta.fechaFin}" pt:pattern="(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}" pt:placeholder="dd-mm-yyyy" pt:required="true">
-                                <f:convertDateTime pattern="dd-mm-yyyy"/>
-                            </h:inputText>
-                            <!--<h:commandButton class="centrarTabla" value="Aceptar">
-                                <f:ajax execute="@form" listener="{oferta.addOferta()}" render="formulario"/>
-                            </h:commandButton>-->
-                            <h:commandButton class="btn btn-primary" value="Aceptar" action="#{oferta.addOferta()}"/>
-                            <br/>
-                        </h:panelGrid>
-                    </h:form>
-                </div>
                 <div class="row col-lg-12 centrar hidden" id="datos">
                     <c:choose>
                         <c:when test="#{usuario.avatar==null}">
@@ -71,7 +35,6 @@
                         </c:otherwise>
                     </c:choose>
                     <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarTabla">
-
                         <h:outputLabel value="Nombre: "/><h:outputText value="#{usuario.nombre}"/>
                         <h:outputLabel value="Apellidos: "/><h:outputText value="#{usuario.apellidos}"/>
                         <h:outputLabel value="Email: "/><h:outputText value="#{usuario.email}"/>
@@ -88,7 +51,7 @@
                 </div>
                 <div class="row col-lg-12 centrar">
                     <button id="botonDatos" class="btn btn-primary">Datos personales</button>
-                    <button id="botonOferta" class="btn btn-primary">Crear Oferta</button>
+                    <h:link class="btn btn-primary" value="Mis Ofertas" outcome="/paginas/gestionOfertas/principal.xhtml"/> 
                     <button id="botonPromo" class="btn btn-primary">Introducir codigo promocional</button>
                     <!--<h:button id="botonDatos" class="btn btn-primary" value="Datos Personales"/>
                     <h:button id="botonOferta" class="btn btn-primary" value="Crear Oferta"/>-->
@@ -100,36 +63,12 @@
                     </h:form>
                 </div>
                 <script>
-                    $("#botonOferta").click(function () {
-                        $("#botonOferta").addClass("hidden");
-                        if ($("#botonDatos").hasClass("hidden")) {
-                            $("#botonDatos").removeClass("hidden");
-                        }
-                        if ($("#botonPromo").hasClass("hidden")) {
-                            $("#botonPromo").removeClass("hidden");
-                        }
-                        if ($("#oferta").hasClass("hidden")) {
-                            if (!$("#datos").hasClass("hidden")) {
-                                $("#datos").addClass("hidden");
-                            }
-                            if (!$("#promocion").hasClass("hidden")) {
-                                $("#promocion").addClass("hidden");
-                            }
-                            $("#oferta").removeClass("hidden");
-                        }
-                    });
                     $("#botonDatos").click(function () {
                         $("#botonDatos").addClass("hidden");
-                        if ($("#botonOferta").hasClass("hidden")) {
-                            $("#botonOferta").removeClass("hidden");
-                        }
                         if ($("#botonPromo").hasClass("hidden")) {
                             $("#botonPromo").removeClass("hidden");
                         }
                         if ($("#datos").hasClass("hidden")) {
-                            if (!$("#oferta").hasClass("hidden")) {
-                                $("#oferta").addClass("hidden");
-                            }
                             if (!$("#promocion").hasClass("hidden")) {
                                 $("#promocion").addClass("hidden");
                             }
@@ -138,16 +77,10 @@
                     });
                     $("#botonPromo").click(function () {
                         $("#botonPromo").addClass("hidden");
-                        if ($("#botonOferta").hasClass("hidden")) {
-                            $("#botonOferta").removeClass("hidden");
-                        }
                         if ($("#botonDatos").hasClass("hidden")) {
                             $("#botonDatos").removeClass("hidden");
                         }
                         if ($("#promocion").hasClass("hidden")) {
-                            if (!$("#oferta").hasClass("hidden")) {
-                                $("#oferta").addClass("hidden");
-                            }
                             if (!$("#datos").hasClass("hidden")) {
                                 $("#datos").addClass("hidden");
                             }
