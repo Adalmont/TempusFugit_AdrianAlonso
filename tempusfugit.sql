@@ -57,19 +57,30 @@ INSERT INTO `ciudades` (`idCiudad`, `nombre`, `estado`, `latitud`, `longitud`) V
 -- Volcando estructura para tabla tempusfugit.horarios
 CREATE TABLE IF NOT EXISTS `horarios` (
   `idHorario` int(11) NOT NULL AUTO_INCREMENT,
-  `horaInicio` int(2) NOT NULL,
-  `horaFin` int(2) NOT NULL,
-  `estado` set('o','l') NOT NULL DEFAULT 'l',
+  `horaInicio` int(4) NOT NULL,
+  `horaFin` int(4) NOT NULL,
+  `estado` set('o','l','s') NOT NULL DEFAULT 'l',
   `idOferta` int(11) NOT NULL,
   `fecha` date NOT NULL,
   PRIMARY KEY (`idHorario`),
   KEY `FK_horarios-servicios_idx` (`idOferta`),
-  CONSTRAINT `FK_horarios-servicios` FOREIGN KEY (`idOferta`) REFERENCES `ofertas` (`idOferta`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  CONSTRAINT `FK_horarios-servicios` FOREIGN KEY (`idOferta`) REFERENCES `ofertas` (`idOferta`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8;
 
 -- Volcando datos para la tabla tempusfugit.horarios: ~0 rows (aproximadamente)
 DELETE FROM `horarios`;
 /*!40000 ALTER TABLE `horarios` DISABLE KEYS */;
+INSERT INTO `horarios` (`idHorario`, `horaInicio`, `horaFin`, `estado`, `idOferta`, `fecha`) VALUES
+	(57, 570, 960, 'l', 31, '2017-01-12'),
+	(58, 570, 960, 'l', 31, '2017-01-13'),
+	(59, 570, 960, 'l', 31, '2017-01-14'),
+	(60, 570, 960, 'l', 31, '2017-01-15'),
+	(61, 570, 960, 'l', 31, '2017-01-16'),
+	(62, 570, 960, 'l', 31, '2017-01-17'),
+	(63, 570, 960, 'l', 31, '2017-01-18'),
+	(64, 660, 810, 'o', 32, '2017-01-19'),
+	(65, 660, 810, 'l', 32, '2017-01-20'),
+	(66, 660, 810, 'o', 32, '2017-01-21');
 /*!40000 ALTER TABLE `horarios` ENABLE KEYS */;
 
 -- Volcando estructura para tabla tempusfugit.mensajes
@@ -87,13 +98,13 @@ CREATE TABLE IF NOT EXISTS `mensajes` (
   KEY `FK_servicioReceptor_idx` (`idOferta`),
   CONSTRAINT `FK_emisor-usuario` FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`idUsuario`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_servicioReceptor` FOREIGN KEY (`idOferta`) REFERENCES `ofertas` (`idOferta`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla tempusfugit.mensajes: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla tempusfugit.mensajes: ~4 rows (aproximadamente)
 DELETE FROM `mensajes`;
 /*!40000 ALTER TABLE `mensajes` DISABLE KEYS */;
 INSERT INTO `mensajes` (`idMensaje`, `idUsuario`, `idOferta`, `tipo`, `asunto`, `contenido`, `fecha`, `leido`) VALUES
-	(20, 34, 17, 'pu', 'Prueba de mensaje', 'mensaje de prueba', '2017-05-23 00:42:45', 'n');
+	(24, 28, 32, 'pu', 'prueba', 'prueba', '2017-05-30 01:32:58', 'n');
 /*!40000 ALTER TABLE `mensajes` ENABLE KEYS */;
 
 -- Volcando estructura para tabla tempusfugit.multimedia
@@ -126,17 +137,16 @@ CREATE TABLE IF NOT EXISTS `ofertas` (
   PRIMARY KEY (`idOferta`),
   KEY `FK_servicio-subcategoria_idx` (`idSubcategoria`),
   KEY `FK_oferta-usuario_idx` (`idUsuario`),
-  CONSTRAINT `FK_oferta-usuario` FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`idUsuario`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `FK_oferta-usuario` FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`idUsuario`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_servicio-subcategoria` FOREIGN KEY (`idSubcategoria`) REFERENCES `subcategorias` (`idSubcategoria`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 
 -- Volcando datos para la tabla tempusfugit.ofertas: ~3 rows (aproximadamente)
 DELETE FROM `ofertas`;
 /*!40000 ALTER TABLE `ofertas` DISABLE KEYS */;
 INSERT INTO `ofertas` (`idOferta`, `nombre`, `descripcion`, `idSubcategoria`, `idUsuario`, `fechaInicio`, `fechaFin`, `estado`, `imgPrincipal`) VALUES
-	(15, 'Reparacion de baldosas', 'Reparo baldosas', 1, 31, '2017-01-22', '2017-01-29', 'a', '15.jpg'),
-	(16, 'Instalacion de Red Eléctrica', 'Me ofrezco a instalar la red electrica de un domicilio', 4, 30, '2017-01-23', '2017-01-29', 'a', '16.jpg'),
-	(17, 'Reparacion de Portátiles', 'Reparo ordenadores portátiles', 3, 33, '2017-01-23', '2017-01-29', 'a', '17.jpg');
+	(31, 'Prueba', 'Prueba', 1, 28, '2017-01-12', '2017-01-18', 'a', NULL),
+	(32, 'Prueba', 'Prueba', 2, 30, '2017-01-19', '2017-01-21', 'a', NULL);
 /*!40000 ALTER TABLE `ofertas` ENABLE KEYS */;
 
 -- Volcando estructura para tabla tempusfugit.promocion
@@ -158,18 +168,21 @@ INSERT INTO `promocion` (`idPromocion`, `codigo`, `saldo`) VALUES
 CREATE TABLE IF NOT EXISTS `servicios` (
   `idServicio` int(11) NOT NULL AUTO_INCREMENT,
   `idOferta` int(11) NOT NULL,
-  `idCliente` int(11) NOT NULL,
+  `idUsuario` int(11) NOT NULL,
+  `idCreador` int(11) NOT NULL,
   `estado` set('a','p','f') NOT NULL DEFAULT 'p',
   `puntuacion` int(11) NOT NULL,
   `idHorario` int(11) NOT NULL,
   `comentario` varchar(140) DEFAULT NULL,
   PRIMARY KEY (`idServicio`),
   KEY `FK_servicio-oferta_idx` (`idOferta`),
-  KEY `FK_servicio-cliente_idx` (`idCliente`),
+  KEY `FK_servicio-cliente_idx` (`idUsuario`),
   KEY `FK_servicio-horario_idx` (`idHorario`),
-  CONSTRAINT `FK_servicio-cliente` FOREIGN KEY (`idCliente`) REFERENCES `usuarios` (`idUsuario`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_servicio-horario` FOREIGN KEY (`idHorario`) REFERENCES `horarios` (`idHorario`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK_servicio-oferta` FOREIGN KEY (`idOferta`) REFERENCES `ofertas` (`idOferta`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `FK_servicio-creador` (`idCreador`),
+  CONSTRAINT `FK_servicio-cliente` FOREIGN KEY (`idUsuario`) REFERENCES `usuarios` (`idUsuario`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `FK_servicio-creador` FOREIGN KEY (`idCreador`) REFERENCES `usuarios` (`idUsuario`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `FK_servicio-horario` FOREIGN KEY (`idHorario`) REFERENCES `horarios` (`idHorario`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `FK_servicio-oferta` FOREIGN KEY (`idOferta`) REFERENCES `ofertas` (`idOferta`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Volcando datos para la tabla tempusfugit.servicios: ~0 rows (aproximadamente)
@@ -215,9 +228,9 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   UNIQUE KEY `email` (`email`),
   KEY `FK_usuarios-ciudad_idx` (`idCiudad`),
   CONSTRAINT `FK_usuarios-ciudad` FOREIGN KEY (`idCiudad`) REFERENCES `ciudades` (`idCiudad`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
 
--- Volcando datos para la tabla tempusfugit.usuarios: ~6 rows (aproximadamente)
+-- Volcando datos para la tabla tempusfugit.usuarios: ~7 rows (aproximadamente)
 DELETE FROM `usuarios`;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
 INSERT INTO `usuarios` (`idUsuario`, `nombre`, `apellidos`, `clave`, `email`, `idCiudad`, `saldo`, `tipo`, `fechaAlta`, `avatar`) VALUES
@@ -226,7 +239,8 @@ INSERT INTO `usuarios` (`idUsuario`, `nombre`, `apellidos`, `clave`, `email`, `i
 	(31, 'Prueba', 'Badajoz', 'qqmH8ZulBdM//2+ruaDKVg==', 'pruebab@mail.com', 4, 0, 'n', '2017-05-22 15:57:21', '31.jpg'),
 	(32, 'Albert', 'Einstein', 'sxoKNJaJxUBsAjHtHKAiBA==', 'albert@mail.com', 4, 0, 'n', '2017-05-23 00:37:03', '32.jpg'),
 	(33, 'Prueba', 'Cáceres', '96VLb4m9D4tqe7bYtpyTUA==', 'pruebac@mail.com', 3, 0, 'n', '2017-05-23 00:38:49', '33.jpg'),
-	(34, 'Friedrich Wilhem', 'Nietzsche', 'gmIBzZi2glp9hxCfIjK/IA==', 'nitz@mail.com', 3, 300, 'n', '2017-05-23 00:41:36', '34.jpg');
+	(34, 'Friedrich Wilhem', 'Nietzsche', 'gmIBzZi2glp9hxCfIjK/IA==', 'nitz@mail.com', 3, 300, 'n', '2017-05-23 00:41:36', '34.jpg'),
+	(35, 'Ahab', 'Ahab', 'RBmA0I39Z7Lz1KurqeLCmQ==', 'pequod@mail.com', 2, 300, 'n', '2017-05-23 18:29:29', '35.jpg');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
