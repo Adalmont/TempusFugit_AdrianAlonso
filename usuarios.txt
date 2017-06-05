@@ -1,10 +1,10 @@
-Email:					Contrase�a:
+Email:					Contraseña:           Ciudad:
 
-william@mail.com			hamlet
-pruebam@mail.com			merida
-pruebab@mail.com			badajoz
-pruebac@mail.com			caceres
-albert@mail.com				mc2e
-nitz@mail.com				superhombre
+william@mail.com			hamlet            Mérida
+pruebam@mail.com			merida            Mérida
+pruebab@mail.com			badajoz           Badajoz
+pruebac@mail.com			caceres           Cáceres
+albert@mail.com				mc2e              Badajoz
+nitz@mail.com				superhombre         Cáceres
 
 Codigo Promocional: TempusFugit, con un valor de 300 minutos
