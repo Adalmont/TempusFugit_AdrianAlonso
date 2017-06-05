@@ -44,10 +44,10 @@ public class Oferta implements Serializable {
     private int idOferta;
     private String nombre;
     private String descripcion;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "idSubcategoria")
     private Subcategoria subcategoria;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "idUsuario")
     @ManagedProperty(value = "#{usuario}")
     private Usuario usuario;
@@ -240,6 +240,7 @@ public class Oferta implements Serializable {
         if (this.opcion!=null){
         addOferta();
         System.out.println("HORA AL CREAR: "+this.horaInicio+ " "+ this.horaFin);
+        System.out.println("FECHA AL CREAR: "+this.fechaFin+" "+this.fechaInicio);
         }else{
             return "false";
         }

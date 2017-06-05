@@ -28,7 +28,7 @@ public class GenericoDAO<T> implements IGenericoDAO<T> {
         sesion.getTransaction().commit();
         sesion.close();
         }catch(TransactionException e){
-            Logger.getLogger(GenericoDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(GenericoDAO.class.getName()).log(Level.ALL, null, e);
         }
     }
     

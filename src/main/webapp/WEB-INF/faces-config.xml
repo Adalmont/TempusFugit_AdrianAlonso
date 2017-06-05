@@ -80,7 +80,7 @@
             <to-view-id>/paginas/ofertas/ofertaIndividual.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
-            <from-action>#{servicio.addServicio(oferta, horarioActual, usuario)}</from-action>
+            <from-action>#{servicio.addServicio(horarioActual, usuario)}</from-action>
             <to-view-id>/paginas/ofertas/ofertaIndividual.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule> 
@@ -109,6 +109,24 @@
             <from-action>#{oferta.crearOferta()}</from-action>
             <from-outcome>false</from-outcome>
             <to-view-id>/paginas/gestionOfertas/principal.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/paginas/gestionOfertas/solicitudes.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{servicioActual.actualizarServicio('a')}</from-action>
+            <to-view-id>/paginas/gestionOfertas/solicitudes.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{servicioActual.rechazarServicio(servicioActual)}</from-action>
+            <to-view-id>/paginas/gestionOfertas/solicitudes.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/paginas/gestionOfertas/ofertasContratadas.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{servicioActual.actualizarServicio('f')}</from-action>
+            <to-view-id>/paginas/gestionOfertas/ofertasContratadas.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>  
 </faces-config>

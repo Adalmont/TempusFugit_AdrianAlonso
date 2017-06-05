@@ -40,7 +40,7 @@ public class Subcategoria implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idSubcategoria;
     private String nombre;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "idCategoria")
     private Categoria categoria;
     private String imagen;

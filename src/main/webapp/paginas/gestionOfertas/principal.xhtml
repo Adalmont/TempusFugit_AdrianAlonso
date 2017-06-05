@@ -23,8 +23,15 @@
                     <h3 class="colorAzul">#{oferta.mensaje}</h3>
                 </div>
                 <div class="row col-lg-12 centrar">
+                    <c:if test="#{usuario.solicitudesPendientes()==true}">
+                        <p class="colorAzul">Tienes #{usuario.numeroSolicitudes} solicitudes pendientes</p>
+                    </c:if>
+                </div>
+                <div class="row col-lg-12 centrar">
                     <h:link class="btn btn-primary" value="Crear Oferta" outcome="/paginas/gestionOfertas/crearOferta.xhtml"/>
                     <h:link class="btn btn-primary" value="Solicitudes" outcome="/paginas/gestionOfertas/solicitudes.xhtml"/>
+                    <h:link class="btn btn-primary" value="Ofertas Contratadas" outcome="/paginas/gestionOfertas/ofertasContratadas.xhtml"/>
+                    <h:link class="btn btn-primary" value="Servicios Ofrecidos" outcome="/paginas/gestionOfertas/serviciosOfrecidos.xhtml"/>
                 </div>
             </ui:define>
         </ui:composition>

@@ -17,6 +17,8 @@
     <h:body>
         <ui:composition template="/resources/plantilla/plantilla.xhtml">
             <ui:define name="contenido">
+                <f:event type="preRenderView" listener="#{horario.limpiarDatos()}"/>
+                <f:event type="preRenderView" listener="#{servicio.limpiarDatos()}"/>
                 <c:choose>
                     <c:when test="#{oferta.imgPrincipal==null}">
                         <h:graphicImage class="centrarImg" alt="foto de perfil" library="imagenes" value="/resources/imagenes/ofertas/serviciogenerico.jpg" height="120" width="120"/><br/><br/>
@@ -36,18 +38,27 @@
                     <h1 class="centrar colorAzul">Horarios</h1>
                     <c:forEach var="horarioActual" items="#{horario.getHorarios(oferta.idOferta)}">
                         <c:if test="#{horarioActual.estado eq 'l'}">
-                            <div class="col-lg-4">
+                            <div class="col-lg-4 centrar">
                                 <h:form>
-                                    <h:panelGrid class="centrarTabla" columns="2" border="0" cellspacing="2">
+                                    <h:panelGrid class="centrarTabla colorFondoAzul" columns="2" border="0" cellspacing="2">
                                         <h:outputLabel value="Fecha: "/>
                                         <h:outputText class="centrar" value="#{horarioActual.fecha}"/>
                                         <h:outputLabel value="Hora de Inicio: "/>
-                                        <h:outputText class="centrar" value="#{horarioActual.horaInicio}"/>
+                                        <h:outputText class="centrar" value="#{horarioActual.getHoraInicioFormateada()}"/>
                                         <h:outputLabel value="Hora de Fin: "/>
-                                        <h:outputText value=" #{horarioActual.horaFin}"/>
+                                        <h:outputText value="#{horarioActual.getHoraFinFormateada()}"/>
+                                        <h:outputLabel value="Coste: "/>
+                                        <h:outputText value="#{horarioActual.horaFin - horarioActual.horaInicio} minutos"/>
                                     </h:panelGrid>
                                     <c:if test="#{usuario.idUsuario!=oferta.usuario.idUsuario}">
-                                        <h:commandButton class="btn btn-primary" value="Contratar Horario" action="#{servicio.addServicio(oferta, horarioActual, usuario)}"/>
+                                        <c:choose>
+                                            <c:when test="#{usuario.saldo>=(horarioActual.horaFin-horarioActual.horaInicio)}">
+                                                <h:commandButton class="btn btn-primary" value="Contratar Horario" action="#{servicio.addServicio(horarioActual, usuario)}"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <h:outputText class="btn btn-primary" value="Fondos Insuficientes"/>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </c:if>
                                 </h:form>
                             </div>

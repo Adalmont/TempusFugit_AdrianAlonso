@@ -62,12 +62,12 @@ public class Usuario implements Serializable {
     private String mensaje;
     @Transient
     private String confirmarClave;
-    /*@Transient
-    private String nuevaClave;*/
     @Transient
     private Part imgSubir;
     @Transient
     private String codigoProm;
+    @Transient
+    private int numeroSolicitudes;
 
     public int getIdUsuario() {
         return idUsuario;
@@ -173,13 +173,14 @@ public class Usuario implements Serializable {
         this.codigoProm = codigoProm;
     }
 
-    /*public String getNuevaClave() {
-        return nuevaClave;
+    public int getNumeroSolicitudes() {
+        return numeroSolicitudes;
     }
 
-    public void setNuevaClave(String nuevaClave) {
-        this.nuevaClave = nuevaClave;
-    }*/
+    public void setNumeroSolicitudes(int numeroSolicitudes) {
+        this.numeroSolicitudes = numeroSolicitudes;
+    }
+
     public void limpiarDatos() {
         this.nombre = null;
         this.apellidos = null;
@@ -266,21 +267,6 @@ public class Usuario implements Serializable {
         return resultado;
     }
 
-    /*public String updateUsuario(){
-        try{
-            if (!this.confirmarClave.equals(this.clave)){
-                this.confirmarClave=null;
-                this.nuevaClave=null;
-                return "Contraseña incorrecta";
-            }else{
-                this.clave=this.nuevaClave;
-                DAOFactory daof = DAOFactory.getDAOFactory();
-                IGenericoDAO gdao = daof.getGenericoDAO();
-                gdao.update(gdao);
-            }
-        }catch(HibernateException he){
-            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
-        }*/
     public String updateUsuario() throws Exception {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -294,22 +280,22 @@ public class Usuario implements Serializable {
             return "false";
         }
     }
-    
-    public String comprobarCodigo() throws Exception{
-        try{
+
+    public String comprobarCodigo() throws Exception {
+        try {
             DAOFactory daof = DAOFactory.getDAOFactory();
             IGenericoDAO gdao = daof.getGenericoDAO();
             ArrayList<Promocion> codigo;
-            codigo = (ArrayList<Promocion>)gdao.get("Promocion as p where p.codigo = '"+this.codigoProm+"'");
-            if (codigo.isEmpty()){
-                this.codigoProm=null;
-                this.mensaje= "El codigo introducido no es correcto";
+            codigo = (ArrayList<Promocion>) gdao.get("Promocion as p where p.codigo = '" + this.codigoProm + "'");
+            if (codigo.isEmpty()) {
+                this.codigoProm = null;
+                this.mensaje = "El codigo introducido no es correcto";
                 return "false";
-            }else{
-                this.codigoProm=null;
+            } else {
+                this.codigoProm = null;
                 this.saldo = this.saldo + codigo.get(0).getSaldo();
                 updateUsuario();
-                this.mensaje= codigo.get(0).getSaldo()+ " minutos se han añadido a su cuenta";
+                this.mensaje = codigo.get(0).getSaldo() + " minutos se han añadido a su cuenta";
                 return "true";
             }
         } catch (HibernateException he) {
@@ -344,5 +330,53 @@ public class Usuario implements Serializable {
         byte[] digest = md.digest();
         byte[] encoded = Base64.encodeBase64(digest);
         return new String(encoded);
+    }
+
+    public boolean solicitudesPendientes() {
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            ArrayList<Servicio> listaServicios = (ArrayList<Servicio>)gdao.get("Servicio where idCreador=" + this.idUsuario + " and estado='p'");
+            if (!listaServicios.isEmpty()){
+                this.numeroSolicitudes= listaServicios.size();
+                return true;
+            }else{
+                return false;
+            }
+        } catch (HibernateException he) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
+            return false;
+        }
+    }
+    public boolean contratos() {
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            ArrayList<Servicio> listaContratos = (ArrayList<Servicio>)gdao.get("Servicio where idUsuario=" + this.idUsuario + " and estado='a'");
+            if (!listaContratos.isEmpty()){
+                this.numeroSolicitudes= listaContratos.size();
+                return true;
+            }else{
+                return false;
+            }
+        } catch (HibernateException he) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
+            return false;
+        }
+    }
+    public boolean ofertas() {
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            ArrayList<Servicio> listaOfertas = (ArrayList<Servicio>)gdao.get("Servicio where idCreador=" + this.idUsuario + " and estado='a'");
+            if (!listaOfertas.isEmpty()){
+                return true;
+            }else{
+                return false;
+            }
+        } catch (HibernateException he) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
+            return false;
+        }
     }
 }

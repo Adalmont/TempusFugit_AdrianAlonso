@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -42,7 +43,7 @@ public class Horario implements Serializable {
     private int horaInicio;
     private int horaFin;
     private String estado;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "idOferta")
     private Oferta oferta;
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -96,12 +97,30 @@ public class Horario implements Serializable {
         this.fecha = fecha;
     }
 
+    public String getHoraInicioFormateada() {
+        return (int)(this.horaInicio / 60) + ":" + (this.horaInicio % 60);
+    }
+
+    public String getHoraFinFormateada() {
+        return (int)(this.horaFin / 60) + ":" + (this.horaFin % 60);
+    }
+
+    public void limpiarDatos() {
+        this.estado = null;
+        this.fecha = null;
+        this.horaFin = 0;
+        this.horaInicio = 0;
+        this.idHorario = 0;
+        this.oferta = null;
+    }
+
     public void addHorario() {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
             IGenericoDAO gdao = daof.getGenericoDAO();
             this.estado = "l";
             gdao.add(this);
+            limpiarDatos();
         } catch (HibernateException e) {
             Logger.getLogger(Horario.class.getName()).log(Level.SEVERE, null, e);
         }

@@ -19,13 +19,13 @@
         <ui:composition template="/resources/plantilla/plantilla.xhtml">
             <ui:define name="contenido">
                 <c:choose>
-                    <c:when test="#{usuario.solicitudesPendientes()==false}">
+                    <c:when test="#{usuario.ofertas()==false}">
                         <div class="row col-lg-12 centrar">
-                            <p class="colorAzul">No hay solicitudes pendientes</p>
+                            <p class="colorAzul">No hay servicios ofrecidos</p>
                         </div>
                     </c:when>
                     <c:otherwise>
-                        <c:forEach var="servicioActual" items="#{servicio.getServicios(usuario.idUsuario, 'and estado=\'p\'')}">
+                        <c:forEach var="servicioActual" items="#{servicio.getServicios(usuario.idUsuario, 'and estado=\'a\' or estado=\'f\'')}">
                             <div class="col-lg-12 centrar">
                                 <h:form>
                                     <h:panelGrid columns="2" border="1" cellspacing="2" class="centrarTabla">
@@ -35,9 +35,16 @@
                                         <h:outputText value="#{servicioActual.oferta.nombre}"/>
                                         <h:outputLabel value="Horario: "/>
                                         <h:outputText value="#{servicioActual.horario.horaInicioFormateada} - #{servicioActual.horario.horaFinFormateada} del #{servicioActual.horario.fecha}"/>
+                                        <h:outputLabel value="Estado: "/>
+                                        <c:choose>
+                                            <c:when test="#{servicioActual.estado eq 'f'}">
+                                                <h:outputText value="Finalizado"/>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <h:outputText value="Aceptado"/>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </h:panelGrid>
-                                    <h:commandButton class="btn btn-primary" value="Aceptar" action="#{servicioActual.actualizarServicio('a')}"/>
-                                    <h:commandButton class="btn btn-primary" value="Rechazar" action="#{servicioActual.rechazarServicio(servicioActual)}"/>
                                 </h:form>
                             </div>
                         </c:forEach>
@@ -50,3 +57,4 @@
         </ui:composition>
     </h:body>
 </html>
+

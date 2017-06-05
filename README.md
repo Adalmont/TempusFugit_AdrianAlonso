@@ -10,4 +10,8 @@ multimedia aun en construccion. |||| 23/05/2017: Subida de Imagenes implementada
 Implementados los codigos promocionales. Contratacion de aun ofertas en construccion. Añado documentos de texto con los usuarios y como hacer funcionar la subida de imagenes.
 |||| 30/05/2017: Modifica la creacion de ofertas: Ahora la gestion de ofertas cuenta con su propia seccion dentro del perfil de usuario (en construccion, solo funcional la creacion
 de ofertas). Modificada la creacion de ofertas: ahora se debe elegir un horario al crear la oferta (De momento funcional solo la opcion de Horario Unico). Ahora los horarios se muestran
-en la pagina de la oferta individual, pero la contratacion de horarios aun no funciona correctamente. Detectado un error al crear la oferta (El mes de la fecha siempre es enero).
+en la pagina de la oferta individual, pero la contratacion de horarios aun no funciona correctamente. Detectado un error al crear la oferta (El mes de la fecha siempre es enero).||||
+06/06/2017: Finalizada la contratacion de ofertas. En el perfil de usuario se ha creado una seccion donde se podran gestionar ofertas, incluyendo crear ofertas nuevas, aceptar o rechazar las
+solicitudes de servicios, comprobar la lista de servicios aceptados a realizar y comprobar los servicios contratados (e indicar cuando se ha finalizado el servicio). Un usuario podra
+contratar horarios de servicios desde la pagina de la oferta, siempre que disponga de fondos suficentes. Al contratar el servicio se sustraen los fondos al cliente, pero el ofertante
+no los recibe hasta que el cliente indique que el servicio ha sido realizado. Si el ofertante rechaza el servicio, el cliente es reembolsado.

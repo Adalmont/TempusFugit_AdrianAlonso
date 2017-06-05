@@ -35,24 +35,25 @@ import org.hibernate.HibernateException;
  */
 @Entity
 @Table(name = "servicios")
-@ManagedBean
+@ManagedBean(name = "servicio", eager = false)
+@SessionScoped
 public class Servicio implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idServicio;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "idOferta")
     private Oferta oferta;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "idUsuario")
     private Usuario usuario;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "idCreador")
     private Usuario creador;
     private String estado;
     private int puntuacion;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "idHorario")
     private Horario horario;
     private String comentario;
@@ -71,14 +72,6 @@ public class Servicio implements Serializable {
 
     public void setOferta(Oferta oferta) {
         this.oferta = oferta;
-    }
-
-    public Usuario getCliente() {
-        return usuario;
-    }
-
-    public void setCliente(Usuario cliente) {
-        this.usuario = cliente;
     }
 
     public String getEstado() {
@@ -129,21 +122,102 @@ public class Servicio implements Serializable {
         this.creador = creador;
     }
 
-    public String addServicio(Oferta oferta, Horario horario, Usuario usuario) {
-        this.oferta = oferta;
-        this.usuario= usuario;
-        this.creador = this.oferta.getUsuario();
-        this.horario = horario;
-        this.horario.setEstado("o");
-        this.estado = "p";
+    public void limpiarDatos() {
+        this.comentario = null;
+        this.estado = null;
+        this.horario = null;
+        this.idServicio = 0;
+        this.oferta = null;
+        this.puntuacion = 0;
+        this.usuario = null;
+    }
+
+    public String addServicio(Horario horario, Usuario usuario) throws Exception {
+        System.out.println("AÑADIENDO SERVICIO");
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
             IGenericoDAO gdao = daof.getGenericoDAO();
+            this.usuario = usuario;
+            this.oferta = (Oferta) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("ofertaElegida");
+            this.horario = horario;
+            this.horario.setEstado("o");
+            this.estado = "p";
+            this.comentario = "";
+            this.puntuacion = 0;
+            this.creador = this.oferta.getUsuario();
+            System.out.println(this.usuario.getSaldo());
+            System.out.println(horario.getHoraFin());
+            System.out.println(horario.getHoraInicio());
+            this.usuario.setSaldo((this.usuario.getSaldo() - (horario.getHoraFin() - horario.getHoraInicio())));
+            System.out.println("DATOS SERVICIO: " + this.estado + " Coment " + this.comentario + " Oferta " + this.oferta.getIdOferta() + " Usuario " + this.usuario.getIdUsuario() + " Horario " + this.horario.getIdHorario());
             gdao.add(this);
             gdao.update(this.horario);
+            this.usuario.updateUsuario();
+            limpiarDatos();
             return "true";
         } catch (HibernateException he) {
-            Logger.getLogger(Servicio.class.getName()).log(Level.SEVERE, null, he);
+            Logger.getLogger(Servicio.class.getName()).log(Level.ALL, null, he);
+            System.out.println("FALO");
+            limpiarDatos();
+            return "false";
+        }
+    }
+
+    public ArrayList<Servicio> getServicios(int idUsuario, String condicion) {
+        ArrayList<Servicio> listaServicios = new ArrayList();
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            listaServicios = (ArrayList<Servicio>) gdao.get("Servicio where idCreador=" + idUsuario + " " + condicion);
+        } catch (HibernateException he) {
+            Logger.getLogger(Oferta.class.getName()).log(Level.SEVERE, null, he);
+        }
+        return listaServicios;
+    }
+
+    public ArrayList<Servicio> getServiciosContratados(int idUsuario) {
+        ArrayList<Servicio> listaServicios = new ArrayList();
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            listaServicios = (ArrayList<Servicio>) gdao.get("Servicio where idUsuario=" + idUsuario);
+        } catch (HibernateException he) {
+            Logger.getLogger(Oferta.class.getName()).log(Level.SEVERE, null, he);
+        }
+        return listaServicios;
+    }
+
+    public String actualizarServicio(String nuevoEstado) {
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            this.estado = nuevoEstado;
+            gdao.update(this);
+            if (nuevoEstado.equals("f")) {
+                this.creador.setSaldo((this.creador.getSaldo() + (this.horario.getHoraFin() - this.horario.getHoraInicio())));
+                gdao.update(this.creador);
+            }
+            return "true";
+        } catch (HibernateException he) {
+            Logger.getLogger(Oferta.class.getName()).log(Level.SEVERE, null, he);
+            return "false";
+        }
+    }
+
+    public String rechazarServicio(Servicio servicio) {
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            Usuario cliente = servicio.getUsuario();
+            Horario horario = servicio.getHorario();
+            cliente.setSaldo((cliente.getSaldo() + (horario.getHoraFin() - horario.getHoraInicio())));
+            horario.setEstado("l");
+            gdao.update(cliente);
+            gdao.update(horario);
+            gdao.delete(servicio);
+            return "true";
+        } catch (HibernateException he) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
             return "false";
         }
     }
