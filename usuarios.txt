@@ -1,4 +1,4 @@
-Email:					Contraseña:           Ciudad:
+﻿Email:					Contraseña:           Ciudad:
 
 william@mail.com			hamlet            Mérida
 pruebam@mail.com			merida            Mérida
@@ -6,5 +6,7 @@ pruebab@mail.com			badajoz           Badajoz
 pruebac@mail.com			caceres           Cáceres
 albert@mail.com				mc2e              Badajoz
 nitz@mail.com				superhombre         Cáceres
+
+admin@mail.com				admin		ADMINISTRADOR
 
 Codigo Promocional: TempusFugit, con un valor de 300 minutos

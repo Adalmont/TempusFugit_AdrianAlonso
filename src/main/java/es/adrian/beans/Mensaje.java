@@ -31,10 +31,10 @@ public class Mensaje implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idMensaje;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "idUsuario")
     private Usuario usuario;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "idOferta")
     private Oferta oferta;
     private String tipo;
@@ -97,13 +97,13 @@ public class Mensaje implements Serializable {
     public void setLeido(String leido) {
         this.leido = leido;
     }
-    
+
     public String addMensaje(Usuario usuario) {
         String exito = null;
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
             IGenericoDAO gdao = daof.getGenericoDAO();
-            this.oferta = (Oferta)FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("ofertaElegida");
+            this.oferta = (Oferta) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("ofertaElegida");
             this.usuario = usuario;
             this.leido = "n";
             gdao.add(this);
@@ -112,6 +112,23 @@ public class Mensaje implements Serializable {
 
         } catch (HibernateException | NullPointerException e) {
             System.out.println("NULO2 ");
+            Logger.getLogger(Mensaje.class.getName()).log(Level.SEVERE, null, e);
+            limpiarDatos();
+            exito = "false";
+        }
+        return exito;
+    }
+
+    public String deleteMensaje() {
+        String exito = null;
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            gdao.delete(this);
+            limpiarDatos();
+            exito = "true";
+
+        } catch (HibernateException | NullPointerException e) {
             Logger.getLogger(Mensaje.class.getName()).log(Level.SEVERE, null, e);
             limpiarDatos();
             exito = "false";

@@ -133,7 +133,6 @@ public class Servicio implements Serializable {
     }
 
     public String addServicio(Horario horario, Usuario usuario) throws Exception {
-        System.out.println("AÑADIENDO SERVICIO");
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
             IGenericoDAO gdao = daof.getGenericoDAO();
@@ -157,7 +156,7 @@ public class Servicio implements Serializable {
             return "true";
         } catch (HibernateException he) {
             Logger.getLogger(Servicio.class.getName()).log(Level.ALL, null, he);
-            System.out.println("FALO");
+            System.out.println("FALLO");
             limpiarDatos();
             return "false";
         }

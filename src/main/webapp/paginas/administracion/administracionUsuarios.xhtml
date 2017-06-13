@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Facelet Title</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="estilos.css"/>
+    </h:head>
+    <ui:composition template="/resources/plantilla/plantilla.xhtml">
+        <ui:define name="contenido">
+            <h1 class="centrar colorAzul">Lista de Usuarios</h1>
+            <c:forEach var="usuarioActual" items="#{usuario.usuarios}">
+                <div class="col-lg-4 centrar">
+                    <h:form>
+                        <h:panelGrid columns="2" border="1" cellspacing="2" class="centrarFormMensaje">
+                            <c:choose>
+                                <c:when test="#{usuarioActual.avatar==null}">
+                                    <h:graphicImage alt="foto de perfil" library="imagenes" value="/resources/imagenes/avatares/desconocido.jpg" height="120" width="120"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <h:graphicImage alt="foto de perfil" library="imagenes" value="/resources/imagenes/avatares/#{usuarioActual.avatar}" height="120" width="120"/>
+                                </c:otherwise>
+                            </c:choose><br/>
+                            <h:outputText value="#{usuarioActual.nombre} #{usuarioActual.apellidos}"/><br/>
+                            <h:outputText value="Email: #{usuarioActual.email}"/><br/>
+                            <h:outputText value="Ciudad de residencia: #{usuarioActual.ciudad.nombre}"/><br/>
+                            <h:outputText value="Saldo: #{usuarioActual.saldo} minutos"/><br/>
+                            <c:if test="#{usuarioActual.tipo eq 'b'}">
+                                <h:outputText class="colorRojo" value="Usuario bloqueado"/><br/>
+                            </c:if>
+                            <c:if test="#{usuarioActual.tipo eq 'n'}">
+                                <h:outputText value="Usuario estandar"/><br/>
+                            </c:if>
+                        </h:panelGrid>
+                        <c:if test="#{usuarioActual.tipo eq 'n'}">
+                            <h:commandButton class="btn btn-primary" value="Bloquear Usuario" action="#{usuarioActual.bloquearUsuario(usuarioActual, 'bloquear')}"/><br/>
+                        </c:if>
+                        <c:if test="#{usuarioActual.tipo eq 'b'}">
+                            <h:commandButton class="btn btn-primary" value="Desbloquear Usuario" action="#{usuarioActual.bloquearUsuario(usuarioActual, 'desbloquear')}"/><br/>
+                        </c:if>
+                    </h:form>
+                    <br/>
+                    <br/>
+                    <br/>
+                </div>
+            </c:forEach>
+            <div class="col-lg-12 centrar">
+                <h:link class="btn btn-primary" value="Volver" outcome="/paginas/administracion/panelAdministrador.xhtml"/>
+            </div>
+        </ui:define>
+    </ui:composition>
+</html>
+

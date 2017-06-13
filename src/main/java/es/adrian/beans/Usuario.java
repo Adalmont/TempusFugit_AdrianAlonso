@@ -68,6 +68,8 @@ public class Usuario implements Serializable {
     private String codigoProm;
     @Transient
     private int numeroSolicitudes;
+    @Transient
+    private int saldoExtra;
 
     public int getIdUsuario() {
         return idUsuario;
@@ -181,6 +183,14 @@ public class Usuario implements Serializable {
         this.numeroSolicitudes = numeroSolicitudes;
     }
 
+    public int getSaldoExtra() {
+        return saldoExtra;
+    }
+
+    public void setSaldoExtra(int saldoExtra) {
+        this.saldoExtra = saldoExtra;
+    }
+
     public void limpiarDatos() {
         this.nombre = null;
         this.apellidos = null;
@@ -246,21 +256,25 @@ public class Usuario implements Serializable {
             user = (ArrayList<Usuario>) gdao.get("Usuario as u where u.email= '" + this.email + "' and u.clave= '" + this.clave + "'");
         }
         if (!user.isEmpty()) {
-            this.apellidos = user.get(0).apellidos;
-            this.nombre = user.get(0).nombre;
-            this.avatar = user.get(0).avatar;
-            this.ciudad = user.get(0).ciudad;
-            this.idUsuario = user.get(0).idUsuario;
-            this.saldo = user.get(0).saldo;
-            this.tipo = user.get(0).tipo;
-            this.clave = user.get(0).clave;
-            this.confirmarClave = null;
-            this.mensaje = null;
-            resultado = "true";
+            if (!user.get(0).getTipo().equals("b")) {
+                this.apellidos = user.get(0).apellidos;
+                this.nombre = user.get(0).nombre;
+                this.avatar = user.get(0).avatar;
+                this.ciudad = user.get(0).ciudad;
+                this.idUsuario = user.get(0).idUsuario;
+                this.saldo = user.get(0).saldo;
+                this.tipo = user.get(0).tipo;
+                this.clave = user.get(0).clave;
+                this.confirmarClave = null;
+                this.mensaje = null;
+                resultado = "true";
+            } else {
+                resultado = "false";
+                limpiarDatos();
+                this.mensaje = "Usuario bloqueado";
+            }
         } else {
             resultado = "false";
-        }
-        if (resultado.equals("false")) {
             limpiarDatos();
             this.mensaje = "Email o contraseña incorrectos";
         }
@@ -275,6 +289,37 @@ public class Usuario implements Serializable {
             logUsuario();
             return "true";
 
+        } catch (HibernateException he) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
+            return "false";
+        }
+    }
+
+    public ArrayList<Usuario> getUsuarios() {
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            ArrayList<Usuario> listaUsuarios = (ArrayList<Usuario>) gdao.get("Usuario where tipo='n' or tipo='b'");
+            return listaUsuarios;
+        } catch (HibernateException he) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
+            return null;
+        }
+    }
+
+    public String bloquearUsuario(Usuario usuario, String bloquear) throws Exception {
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            if (bloquear.equals("bloquear")) {
+                usuario.tipo = "b";
+                gdao.update(usuario);
+            }
+            if (bloquear.equals("desbloquear")) {
+                usuario.tipo = "n";
+                gdao.update(usuario);
+            }
+            return "true";
         } catch (HibernateException he) {
             Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
             return "false";
@@ -336,11 +381,11 @@ public class Usuario implements Serializable {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
             IGenericoDAO gdao = daof.getGenericoDAO();
-            ArrayList<Servicio> listaServicios = (ArrayList<Servicio>)gdao.get("Servicio where idCreador=" + this.idUsuario + " and estado='p'");
-            if (!listaServicios.isEmpty()){
-                this.numeroSolicitudes= listaServicios.size();
+            ArrayList<Servicio> listaServicios = (ArrayList<Servicio>) gdao.get("Servicio where idCreador=" + this.idUsuario + " and estado='p'");
+            if (!listaServicios.isEmpty()) {
+                this.numeroSolicitudes = listaServicios.size();
                 return true;
-            }else{
+            } else {
                 return false;
             }
         } catch (HibernateException he) {
@@ -348,15 +393,33 @@ public class Usuario implements Serializable {
             return false;
         }
     }
+
+    public boolean ofertasPendientes() {
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            ArrayList<Oferta> listaOfertas = (ArrayList<Oferta>) gdao.get("Oferta where estado='p'");
+            if (!listaOfertas.isEmpty()) {
+                this.numeroSolicitudes = listaOfertas.size();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (HibernateException he) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
+            return false;
+        }
+    }
+
     public boolean contratos() {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
             IGenericoDAO gdao = daof.getGenericoDAO();
-            ArrayList<Servicio> listaContratos = (ArrayList<Servicio>)gdao.get("Servicio where idUsuario=" + this.idUsuario + " and estado='a'");
-            if (!listaContratos.isEmpty()){
-                this.numeroSolicitudes= listaContratos.size();
+            ArrayList<Servicio> listaContratos = (ArrayList<Servicio>) gdao.get("Servicio where idUsuario=" + this.idUsuario + " and estado='a'");
+            if (!listaContratos.isEmpty()) {
+                this.numeroSolicitudes = listaContratos.size();
                 return true;
-            }else{
+            } else {
                 return false;
             }
         } catch (HibernateException he) {
@@ -364,14 +427,15 @@ public class Usuario implements Serializable {
             return false;
         }
     }
+
     public boolean ofertas() {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
             IGenericoDAO gdao = daof.getGenericoDAO();
-            ArrayList<Servicio> listaOfertas = (ArrayList<Servicio>)gdao.get("Servicio where idCreador=" + this.idUsuario + " and estado='a'");
-            if (!listaOfertas.isEmpty()){
+            ArrayList<Servicio> listaOfertas = (ArrayList<Servicio>) gdao.get("Servicio where idCreador=" + this.idUsuario + " and estado='a'");
+            if (!listaOfertas.isEmpty()) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         } catch (HibernateException he) {

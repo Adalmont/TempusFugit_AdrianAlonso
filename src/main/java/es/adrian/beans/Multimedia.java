@@ -27,7 +27,7 @@ public class Multimedia implements Serializable {
     private int idMultimedia;
     private String nombre;
     private String tipo;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Oferta oferta;
 
     public int getIdMultimedia() {

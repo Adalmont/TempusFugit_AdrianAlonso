@@ -14,4 +14,7 @@ en la pagina de la oferta individual, pero la contratacion de horarios aun no fu
 06/06/2017: Finalizada la contratacion de ofertas. En el perfil de usuario se ha creado una seccion donde se podran gestionar ofertas, incluyendo crear ofertas nuevas, aceptar o rechazar las
 solicitudes de servicios, comprobar la lista de servicios aceptados a realizar y comprobar los servicios contratados (e indicar cuando se ha finalizado el servicio). Un usuario podra
 contratar horarios de servicios desde la pagina de la oferta, siempre que disponga de fondos suficentes. Al contratar el servicio se sustraen los fondos al cliente, pero el ofertante
-no los recibe hasta que el cliente indique que el servicio ha sido realizado. Si el ofertante rechaza el servicio, el cliente es reembolsado.
+no los recibe hasta que el cliente indique que el servicio ha sido realizado. Si el ofertante rechaza el servicio, el cliente es reembolsado. |||| 13/06/2017: Creada la funcion del administrador.
+el administrador cuenta con un panel desde el que puede consultar la lista de usuarios de la aplicacion (y bloquearlos/desbloquearlos), añadir nuevas ciudades, añadir nuevos codigos promocionales
+y aprobar/rechazar ofertas. Ahora cuando se crea una oferta esta debe ser aprobada por el administrador antes de poder ser vista en la lista de ofertas disponibles. El administrador tambien
+puede ver todos los mensajes, publicos y privados, de una oferta, asi como borrarlos.

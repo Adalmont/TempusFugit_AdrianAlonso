@@ -44,7 +44,7 @@
                     <c:forEach var="ofertaActual" items="#{oferta.ofertas}">
                         <c:choose>
                             <c:when test="#{not empty ofertaActual}">
-                                <c:if test="#{usuario.idUsuario==0 or usuario.ciudad== ofertaActual.usuario.ciudad}">
+                                <c:if test="#{ofertaActual.estado eq 'a' and (usuario.idUsuario==0 or usuario.tipo eq 'a' or usuario.ciudad== ofertaActual.usuario.ciudad)}">
                                     <h:form>
                                         <h:panelGrid columns="2" border="1" cellspacing="2" class="centrarTabla">
                                             <c:choose>

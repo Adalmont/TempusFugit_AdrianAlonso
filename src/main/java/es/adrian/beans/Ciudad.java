@@ -18,6 +18,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import org.hibernate.HibernateException;
 
 /**
@@ -36,12 +37,14 @@ public class Ciudad implements Serializable {
     private String estado;
     private double latitud;
     private double longitud;
+    @Transient
+    private String mensaje;
 
-    public int getIdCiudad() {
+    public Integer getIdCiudad() {
         return idCiudad;
     }
 
-    public void setIdCiudad(int idCiudad) {
+    public void setIdCiudad(Integer idCiudad) {
         this.idCiudad = idCiudad;
     }
 
@@ -77,6 +80,21 @@ public class Ciudad implements Serializable {
         this.longitud = longitud;
     }
 
+    public String getMensaje() {
+        return mensaje;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
+    }
+
+    public void limpiarDatos() {
+        this.nombre = null;
+        this.latitud = 0;
+        this.longitud = 0;
+        this.estado = null;
+    }
+
     public ArrayList<Ciudad> getCiudades() {
         ArrayList<Ciudad> listaCiudades = new ArrayList();
         try {
@@ -87,6 +105,21 @@ public class Ciudad implements Serializable {
             Logger.getLogger(Oferta.class.getName()).log(Level.SEVERE, null, he);
         }
         return listaCiudades;
+    }
+
+    public String addCiudad() {
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            this.estado = "a";
+            gdao.add(this);
+            limpiarDatos();
+            this.mensaje= "Ciudad Añadida";
+            return "true";
+        } catch (HibernateException he) {
+            Logger.getLogger(Oferta.class.getName()).log(Level.SEVERE, null, he);
+            return "false";
+        }
     }
 
     @Override

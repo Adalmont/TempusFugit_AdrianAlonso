@@ -98,11 +98,15 @@ public class Horario implements Serializable {
     }
 
     public String getHoraInicioFormateada() {
-        return (int)(this.horaInicio / 60) + ":" + (this.horaInicio % 60);
+        if ((this.horaInicio % 60) == 0) {
+            return (int) (this.horaInicio / 60)+"";
+        } else {
+            return (int) (this.horaInicio / 60) + ":" + (this.horaInicio % 60);
+        }
     }
 
     public String getHoraFinFormateada() {
-        return (int)(this.horaFin / 60) + ":" + (this.horaFin % 60);
+        return (int) (this.horaFin / 60) + ":" + (this.horaFin % 60);
     }
 
     public void limpiarDatos() {

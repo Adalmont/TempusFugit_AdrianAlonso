@@ -20,7 +20,8 @@
             <from-outcome>false</from-outcome>
             <to-view-id>/paginas/registro-login/registro.xhtml</to-view-id>
         </navigation-case>
-    </navigation-rule> 
+    </navigation-rule>
+     
     <navigation-rule>
         <from-view-id>/paginas/registro-login/login.xhtml</from-view-id>
         <navigation-case>
@@ -38,6 +39,7 @@
             <to-view-id>/paginas/registro-login/login.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
+    
     <navigation-rule>
         <from-view-id>/paginas/perfilUsuario/perfil.xhtml</from-view-id>
         <navigation-case>
@@ -54,6 +56,7 @@
             <to-view-id>/paginas/perfilUsuario/perfil.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule> 
+    
     <navigation-rule>
         <from-view-id>/paginas/ofertas/listaOfertas.xhtml</from-view-id>
         <navigation-case>
@@ -66,7 +69,8 @@
             <from-outcome>false</from-outcome>
             <to-view-id>/paginas/ofertas/listaOfertas.xhtml</to-view-id>
         </navigation-case>
-    </navigation-rule> 
+    </navigation-rule>
+     
     <navigation-rule>
         <from-view-id>/paginas/ofertas/ofertaIndividual.xhtml</from-view-id>
         <navigation-case>
@@ -83,14 +87,20 @@
             <from-action>#{servicio.addServicio(horarioActual, usuario)}</from-action>
             <to-view-id>/paginas/ofertas/ofertaIndividual.xhtml</to-view-id>
         </navigation-case>
-    </navigation-rule> 
+        <navigation-case>
+            <from-action>#{mensajeActual.deleteMensaje()}</from-action>
+            <to-view-id>/paginas/ofertas/ofertaIndividual.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+     
     <navigation-rule>
         <from-view-id>/paginas/buscador/buscador.xhtml</from-view-id>
         <navigation-case>
             <from-action>buscar</from-action>
             <to-view-id>/paginas/buscador/resultadosBusqueda.xhtml</to-view-id>
         </navigation-case>
-    </navigation-rule> 
+    </navigation-rule>
+     
     <navigation-rule>
         <from-view-id>/paginas/buscador/resultadosBusqueda.xhtml</from-view-id>
         <navigation-case>
@@ -98,6 +108,7 @@
             <to-view-id>/paginas/buscador/resultadosBusqueda.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
+    
     <navigation-rule>
         <from-view-id>/paginas/gestionOfertas/crearOferta.xhtml</from-view-id>
         <navigation-case>
@@ -111,6 +122,7 @@
             <to-view-id>/paginas/gestionOfertas/principal.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
+    
     <navigation-rule>
         <from-view-id>/paginas/gestionOfertas/solicitudes.xhtml</from-view-id>
         <navigation-case>
@@ -122,11 +134,66 @@
             <to-view-id>/paginas/gestionOfertas/solicitudes.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
+    
     <navigation-rule>
         <from-view-id>/paginas/gestionOfertas/ofertasContratadas.xhtml</from-view-id>
         <navigation-case>
             <from-action>#{servicioActual.actualizarServicio('f')}</from-action>
             <to-view-id>/paginas/gestionOfertas/ofertasContratadas.xhtml</to-view-id>
         </navigation-case>
-    </navigation-rule>  
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/paginas/administracion/ofertasPendientes.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{ofertaActual.aprobarOferta('aprobada')}</from-action>
+            <to-view-id>/paginas/administracion/ofertasPendientes.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{ofertaActual.aprobarOferta('rechazada')}</from-action>
+            <to-view-id>/paginas/administracion/ofertasPendientes.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/paginas/administracion/nuevoCodigo.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{promocion.addPromocion()}</from-action>
+            <to-view-id>/paginas/administracion/nuevoCodigo.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/paginas/administracion/panelAdministrador.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{usuario.logOut()}</from-action>
+            <from-outcome>true</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/paginas/administracion/administracionUsuarios.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{usuarioActual.bloquearUsuario(usuarioActual, 'bloquear')}</from-action>
+            <to-view-id>/paginas/administracion/administracionUsuarios.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{usuarioActual.bloquearUsuario(usuarioActual, 'desbloquear')}</from-action>
+            <to-view-id>/paginas/administracion/administracionUsuarios.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{usuarioActual.incrementarSaldo(usuarioActual)}</from-action>
+            <to-view-id>/paginas/administracion/administracionUsuarios.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/paginas/administracion/nuevaCiudad.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{ciudad.addCiudad()}</from-action>
+            <to-view-id>/paginas/administracion/nuevaCiudad.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
 </faces-config>

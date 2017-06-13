@@ -205,22 +205,13 @@ public class Oferta implements Serializable {
         }
         return listaOfertas;
     }
-    /*public ArrayList<Oferta> getOfertasByCat() {
-        ArrayList<Oferta> listaOfertas = new ArrayList();
-        try {
-            DAOFactory daof = DAOFactory.getDAOFactory();
-            IGenericoDAO gdao = daof.getGenericoDAO();
-            listaOfertas = (ArrayList<Oferta>) gdao.get("Oferta");
-        } catch (HibernateException he) {
-            Logger.getLogger(Oferta.class.getName()).log(Level.SEVERE, null, he);
-        }
-    }*/
+
     public String addOferta() throws IOException {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
             IGenericoDAO gdao = daof.getGenericoDAO();
 
-            this.estado = "a";
+            this.estado = "p";
             gdao.add(this);
             if (this.imgSubir != null) {
                 subirImagenPrincipal();
@@ -237,11 +228,11 @@ public class Oferta implements Serializable {
 
     public String crearOferta() throws IOException {
         String resultado = null;
-        if (this.opcion!=null){
-        addOferta();
-        System.out.println("HORA AL CREAR: "+this.horaInicio+ " "+ this.horaFin);
-        System.out.println("FECHA AL CREAR: "+this.fechaFin+" "+this.fechaInicio);
-        }else{
+        if (this.opcion != null) {
+            addOferta();
+            System.out.println("HORA AL CREAR: " + this.horaInicio + " " + this.horaFin);
+            System.out.println("FECHA AL CREAR: " + this.fechaFin + " " + this.fechaInicio);
+        } else {
             return "false";
         }
         if (this.opcion.equals("unica")) {
@@ -263,7 +254,7 @@ public class Oferta implements Serializable {
                     horario.setHoraFin(this.horaFin);
                     horario.setOferta(this);
                     horario.addHorario();
-                    System.out.println("HORARIO AL CREAR: "+this.horaInicio+ " "+ this.horaFin + "\\\\"+horario.getHoraInicio()+" "+horario.getHoraFin());
+                    System.out.println("HORARIO AL CREAR: " + this.horaInicio + " " + this.horaFin + "\\\\" + horario.getHoraInicio() + " " + horario.getHoraFin());
                 }
                 limpiarDatos();
                 resultado = "creada";
@@ -331,6 +322,17 @@ public class Oferta implements Serializable {
         } catch (HibernateException he) {
             Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
             return "false";
+        }
+    }
+
+    public String aprobarOferta(String aprobar) {
+        if(!aprobar.equals("aprobada")){
+            deleteOferta();
+            return "borrada";
+        }else{
+            this.estado="a";
+            updateOferta();
+            return "aprobada";
         }
     }
 

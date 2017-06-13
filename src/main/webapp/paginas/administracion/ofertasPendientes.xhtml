@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:of="http://omnifaces.org/functions">
+    <h:head>
+        <title>Facelet Title</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="estilos.css"/>    
+    </h:head>
+    <h:body>
+        <ui:composition template="/resources/plantilla/plantilla.xhtml">
+            <ui:define name="contenido">
+                <c:choose>
+                    <c:when test="#{usuario.ofertasPendientes()==false}">
+                        <div class="row col-lg-12 centrar">
+                            <p class="colorAzul">No hay solicitudes pendientes</p>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach var="ofertaActual" items="#{oferta.ofertas}">
+                            <c:if test="#{ofertaActual.estado eq 'p'}">
+                                <div class="col-lg-12 centrar">
+                                    <h:form>
+                                        <h:panelGrid columns="2" border="1" cellspacing="2" class="centrarTabla">
+                                            <c:choose>
+                                                <c:when test="#{ofertaActual.imgPrincipal==null}">
+                                                    <h:graphicImage alt="foto de perfil" library="imagenes" value="/resources/imagenes/ofertas/serviciogenerico.jpg" height="120" width="120"/>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <h:graphicImage alt="foto de perfil" library="imagenes" value="/resources/imagenes/ofertas/#{ofertaActual.imgPrincipal}" height="120" width="120"/>
+                                                </c:otherwise>
+                                            </c:choose><br/>
+                                            <h:outputLabel value="Creador: "/>
+                                            <h:outputText value="#{ofertaActual.usuario.nombre} #{ofertaActual.usuario.apellidos}"/>
+                                            <h:outputLabel value="Nombre: "/>
+                                            <h:outputText value="#{ofertaActual.nombre}"/>
+                                            <h:outputLabel value="Descripcion: "/>
+                                            <h:outputText value="#{ofertaActual.descripcion}"/>
+                                        </h:panelGrid>
+                                        <h:commandButton class="btn btn-primary" value="Aprobar" action="#{ofertaActual.aprobarOferta('aprobada')}"/>
+                                        <h:commandButton class="btn btn-primary" value="Rechazar" action="#{ofertaActual.aprobarOferta('rechazada')}"/>
+                                    </h:form>
+                                </div>
+                            </c:if>
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
+                <div class="col-lg-12 centrar">
+                    <h:link class="btn btn-primary" value="Volver" outcome="/paginas/administracion/panelAdministrador.xhtml"/>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

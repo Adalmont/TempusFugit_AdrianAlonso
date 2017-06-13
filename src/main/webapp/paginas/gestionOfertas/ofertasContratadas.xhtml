@@ -49,7 +49,9 @@
                                             </c:otherwise>
                                         </c:choose>
                                     </h:panelGrid>
-                                    <h:commandButton class="btn btn-primary" value="Servicio Completado" action="#{servicioActual.actualizarServicio('f')}"/>
+                                    <c:if test="#{servicioActual.estado eq 'a'}">
+                                        <h:commandButton class="btn btn-primary" value="Servicio Completado" action="#{servicioActual.actualizarServicio('f')}"/>
+                                    </c:if>
                                 </h:form>
 
                             </div>

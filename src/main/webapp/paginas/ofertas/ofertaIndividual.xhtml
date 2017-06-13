@@ -50,7 +50,7 @@
                                         <h:outputLabel value="Coste: "/>
                                         <h:outputText value="#{horarioActual.horaFin - horarioActual.horaInicio} minutos"/>
                                     </h:panelGrid>
-                                    <c:if test="#{usuario.idUsuario!=oferta.usuario.idUsuario}">
+                                    <c:if test="#{usuario.idUsuario!=oferta.usuario.idUsuario and !usuario.tipo eq 'a'}">
                                         <c:choose>
                                             <c:when test="#{usuario.saldo>=(horarioActual.horaFin-horarioActual.horaInicio)}">
                                                 <h:commandButton class="btn btn-primary" value="Contratar Horario" action="#{servicio.addServicio(horarioActual, usuario)}"/>
@@ -69,7 +69,7 @@
                     <h1 class="centrar colorAzul">Mensajes</h1>
                     <c:forEach var="mensajeActual" items="#{mensaje.getMensajes(oferta.idOferta)}">
                         <c:if test="#{mensajeActual.oferta.idOferta==oferta.idOferta}">
-                            <c:if test="#{mensajeActual.tipo eq 'pri' and (usuario.idUsuario == mensajeActual.usuario.idUsuario or oferta.usuario.idUsuario == usuario.idUsuario)}">
+                            <c:if test="#{mensajeActual.tipo eq 'pri' and (usuario.idUsuario == mensajeActual.usuario.idUsuario or oferta.usuario.idUsuario == usuario.idUsuario or usuario.tipo eq 'a')}">
                                 <h:panelGrid class="centrarTabla" columns="2" border="0" cellspacing="2">
                                     <h:outputLabel value="Autor: "/>
                                     <h:outputText class="centrar colorFondoAzul" value="#{mensajeActual.usuario.nombre} #{mensajeActual.usuario.apellidos}"/>
@@ -91,6 +91,11 @@
                                 </h:panelGrid>
                                 <br/>
                             </c:if>
+                            <c:if test="#{usuario.tipo eq 'a'}">
+                                <h:form>
+                                    <h:commandButton class="btn btn-primary centrarTabla" value="Borrar Mensaje" action="#{mensajeActual.deleteMensaje()}"/>
+                                </h:form>
+                            </c:if>
                         </c:if>
                     </c:forEach>
                     <div id="crearMensaje" class="col-lg-12 centrar hidden">
@@ -105,9 +110,6 @@
                                     <f:selectItem itemValue="pu" itemLabel="Publico"/>
                                     <f:selectItem itemValue="pri" itemLabel="Privado"/>
                                 </h:selectOneRadio>
-                                <!--<h:commandButton class="centrarTabla" value="Crear Mensaje">
-                                    <f:ajax execute="@form" listener="{mensaje.addMensaje(usuario)}" render="@all"/>
-                                </h:commandButton>-->
                                 <h:commandButton class="centrarTabla" value="Crear Mensaje" action="#{mensaje.addMensaje(usuario)}"/>
                             </h:panelGrid>
                         </h:form>

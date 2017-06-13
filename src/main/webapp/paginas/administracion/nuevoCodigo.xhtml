@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:of="http://omnifaces.org/functions">
+    <h:head>
+        <title>Facelet Title</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="estilos.css"/>    
+    </h:head>
+    <h:body>
+
+        <ui:composition template="/resources/plantilla/plantilla.xhtml">
+            <ui:define name="contenido">
+                <h1 class="centrar colorAzulOscuro">Introduzca un nuevo codigo promocional</h1>
+                <p class="centrar colorAzul">#{promocion.mensaje}</p>
+                <h:form class="centrar">
+                    <div class="col-lg-12 centrar">
+                        <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarTabla">
+                            <h:outputLabel value="Codigo: "/>
+                            <h:inputText value="#{promocion.codigo}" pt:required="true"/>
+                            <h:outputLabel value="Valor: "/>
+                            <h:inputText value="#{promocion.saldo}" pt:required="true" pt:pattern="^(0|[1-9][0-9]*)$"/>
+                        </h:panelGrid>
+                        <h:commandButton class="btn btn-primary" value="Aceptar" action="#{promocion.addPromocion()}"/>
+                        <h:link class="btn btn-primary" value="Volver" outcome="/paginas/administracion/panelAdministrador.xhtml"/>
+                    </div>
+                </h:form>
+                
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

@@ -11,7 +11,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
         <ui:insert name="cabeceraPersonalizada">
-            
+
         </ui:insert>
         <h:outputStylesheet library="css" name="estilos.css"/>
     </h:head>
@@ -44,8 +44,16 @@
                 <ul class="listaNav">
                     <c:choose>
                         <c:when  test="#{usuario.idUsuario!=0}">
-                            <li class="navEl"><h:link class="btn btn-primary" value="Perfil" outcome="/paginas/perfilUsuario/perfil.xhtml"/></li>
+                            <c:choose>
+                                <c:when test="#{usuario.tipo eq 'a'}">
+                                    <li class="navEl"><h:link class="btn btn-primary" value="Panel de Administrador" outcome="/paginas/administracion/panelAdministrador.xhtml"/></li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li class="navEl"><h:link class="btn btn-primary" value="Perfil" outcome="/paginas/perfilUsuario/perfil.xhtml"/></li>
+                                </c:otherwise>
+                            </c:choose>
                         </c:when>
+
                         <c:otherwise>
                             <li class="navEl"><h:link class="btn btn-primary" value="Login" outcome="/paginas/registro-login/login.xhtml"/></li>  
                             <li class="navEl"><h:link class="btn btn-primary" value="Registro" outcome="/paginas/registro-login/registro.xhtml"/></li>
