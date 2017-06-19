@@ -1,6 +1,5 @@
 package es.adrian.dao;
 
-
 import es.adrian.persistencia.HibernateUtil;
 import java.io.Serializable;
 

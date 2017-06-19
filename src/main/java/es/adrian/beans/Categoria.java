@@ -21,8 +21,13 @@ import javax.persistence.GenerationType;
 import org.hibernate.HibernateException;
 
 /**
- *
- * @author Adrian
+ * Clase para controlar todo lo relacionado con las
+ * categorias de las ofertas
+ * 
+ * @author Adrian Alonso Montero
+ * @version Final
+ * @since 1.8
+ * 
  */
 @Entity
 @Table(name = "categorias")
@@ -59,6 +64,11 @@ public class Categoria implements Serializable {
         this.imagen = imagen;
     }
 
+    /**
+     * Metodo que devuelve un Array List con todas las categorias
+     * de las ofertas
+     * @return lista de categorias 
+     */
     public ArrayList<Categoria> getCat() {
         ArrayList<Categoria> listaCat = new ArrayList();
         try {

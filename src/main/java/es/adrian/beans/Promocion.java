@@ -21,8 +21,11 @@ import javax.persistence.Transient;
 import org.hibernate.HibernateException;
 
 /**
- *
+ * Clase que controla todo lo relacionado con los codigos promocionales
+ * de la aplicacion
  * @author Adrian
+ * @version final
+ * @since 1.8
  */
 @Entity
 @Table(name = "promocion")
@@ -70,12 +73,19 @@ public class Promocion implements Serializable {
         this.mensaje = mensaje;
     }
     
+    /**
+     * metodo para reiniciar los parametros del bean
+     */
     public void limpiarDatos(){
         this.codigo = null;
         this.idPromocion = 0;
         this.saldo = 0;
     }
 
+    /**
+     * Metodo para crear un nuevo codigo promocional en la base de datos
+     * @return true si se crea correctamente, false si se produce un error de hibernate
+     */
     public String addPromocion() {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();

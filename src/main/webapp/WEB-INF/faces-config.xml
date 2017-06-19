@@ -20,6 +20,11 @@
             <from-outcome>false</from-outcome>
             <to-view-id>/paginas/registro-login/registro.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-action>#{usuario.addUsuario()}</from-action>
+            <from-outcome>nuevaCiudad</from-outcome>
+            <to-view-id>/paginas/registro-login/nuevaCiudad.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
      
     <navigation-rule>
@@ -107,6 +112,16 @@
             <from-action>buscar</from-action>
             <to-view-id>/paginas/buscador/resultadosBusqueda.xhtml</to-view-id>
         </navigation-case>
+        <navigation-case>
+            <from-action>#{oferta.elegirOferta(ofertaActual)}</from-action>
+            <from-outcome>true</from-outcome>
+            <to-view-id>/paginas/ofertas/ofertaIndividual.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{oferta.elegirOferta(ofertaActual)}</from-action>
+            <from-outcome>false</from-outcome>
+            <to-view-id>/paginas/ofertas/listaOfertas.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>
     
     <navigation-rule>
@@ -193,6 +208,38 @@
         <navigation-case>
             <from-action>#{ciudad.addCiudad()}</from-action>
             <to-view-id>/paginas/administracion/nuevaCiudad.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/paginas/administracion/aprobarCiudades.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{ciudadActual.deleteCiudad()}</from-action>
+            <to-view-id>/paginas/administracion/aprobarCiudades.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{ciudad.elegirCiudad(ciudadActual)}</from-action>
+            <to-view-id>/paginas/administracion/aprobarCiudad.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/paginas/administracion/aprobarCiudad.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{ciudadActual.deleteCiudad()}</from-action>
+            <to-view-id>/paginas/administracion/aprobarCiudades.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{ciudad.updateCiudad()}</from-action>
+            <to-view-id>/paginas/administracion/aprobarCiudades.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/paginas/registro-login/nuevaCiudad.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{usuario.crearCiudad()}</from-action>
+            <to-view-id>/paginas/perfilUsuario/perfil.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     

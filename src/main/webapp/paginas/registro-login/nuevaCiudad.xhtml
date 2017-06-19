@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        pagina login
+        <ui:composition template="/resources/plantilla/plantilla.xhtml">
+            <ui:define name="contenido">
+                <h1 class="centrar colorAzul">Introduzca el nombre de su ciudad</h1>
+                <div class="col-lg-12 centrar">
+                    <h:form>
+                        <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarTabla">
+                            <h:outputLabel value="Nueva Ciudad: "/>
+                            <h:inputText value="#{usuario.nuevaCiudad}" pt:required="true" pt:placeholder="Nombre de la Ciudad"/>
+                        </h:panelGrid>
+                        <h:commandButton class="btn btn-primary" value="Aceptar" action="#{usuario.crearCiudad()}"/>
+                    </h:form>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+
+

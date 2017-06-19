@@ -17,4 +17,5 @@ contratar horarios de servicios desde la pagina de la oferta, siempre que dispon
 no los recibe hasta que el cliente indique que el servicio ha sido realizado. Si el ofertante rechaza el servicio, el cliente es reembolsado. |||| 13/06/2017: Creada la funcion del administrador.
 el administrador cuenta con un panel desde el que puede consultar la lista de usuarios de la aplicacion (y bloquearlos/desbloquearlos), añadir nuevas ciudades, añadir nuevos codigos promocionales
 y aprobar/rechazar ofertas. Ahora cuando se crea una oferta esta debe ser aprobada por el administrador antes de poder ser vista en la lista de ofertas disponibles. El administrador tambien
-puede ver todos los mensajes, publicos y privados, de una oferta, asi como borrarlos.
+puede ver todos los mensajes, publicos y privados, de una oferta, asi como borrarlos. |||| 20/06/2017: Creada la sugerencia de ciudades por parte de usuarios. Los usuarios que sugieran una
+ciudad entraran en un estado de espera en el que no podran utilizar la aplicacion hasta que un administrador apruebe la ciudad. Generado el Javadoc

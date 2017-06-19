@@ -29,8 +29,12 @@ import javax.persistence.Temporal;
 import org.hibernate.HibernateException;
 
 /**
- *
+ * Clase para controlar todo lo relacionado con los
+ * horarios de las ofertas de la aplicacion
+ * 
  * @author Adrian
+ * @version final
+ * @since 1.8
  */
 @Entity
 @Table(name = "horarios")
@@ -97,18 +101,38 @@ public class Horario implements Serializable {
         this.fecha = fecha;
     }
 
+    /**
+     * Metodo para devolver la hora de inicio
+     * en formato 24h
+     * 
+     * @return hora de inicio en formato hh:mm o solo hh
+     */
     public String getHoraInicioFormateada() {
         if ((this.horaInicio % 60) == 0) {
-            return (int) (this.horaInicio / 60)+"";
+            return (int) (this.horaInicio / 60) + "";
         } else {
             return (int) (this.horaInicio / 60) + ":" + (this.horaInicio % 60);
         }
     }
 
+    /**
+     * Metodo para devolver la hora de fin
+     * en formato 24h
+     * 
+     * @return hora de fin en formato hh:mm o solo hh
+     */
     public String getHoraFinFormateada() {
-        return (int) (this.horaFin / 60) + ":" + (this.horaFin % 60);
+        if ((this.horaFin % 60) == 0) {
+            return (int) (this.horaFin / 60) + "";
+        } else {
+            return (int) (this.horaFin / 60) + ":" + (this.horaFin % 60);
+        }
+
     }
 
+    /**
+     * metodo para reiniciar los parametros del bean
+     */
     public void limpiarDatos() {
         this.estado = null;
         this.fecha = null;
@@ -118,6 +142,9 @@ public class Horario implements Serializable {
         this.oferta = null;
     }
 
+    /**
+     * metodo para crear un nuevo horario en la base de datos
+     */
     public void addHorario() {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -130,6 +157,12 @@ public class Horario implements Serializable {
         }
     }
 
+    /**
+     * Metodo para obtener todos los horarios pertenecientes a una oferta
+     * concreta
+     * @param idOferta identificador de la oferta de la que se desean obtener los horarios
+     * @return lista de horarios de la oferta
+     */
     public ArrayList<Horario> getHorarios(int idOferta) {
         ArrayList<Horario> listaHorarios = new ArrayList();
         try {

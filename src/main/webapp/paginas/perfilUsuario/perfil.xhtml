@@ -21,41 +21,47 @@
             <ui:define name="contenido">
                 <f:event type="preRenderView" listener="#{oferta.limpiarDatos()}"/>
                 <h1 class="centrar colorAzulOscuro">Perfil de #{usuario.nombre} #{usuario.apellidos}</h1>
-                <div class="row col-lg-12 centrar hidden" id="datos">
-                    <c:choose>
-                        <c:when test="#{usuario.avatar==null}">
-                            <h:form enctype="multipart/form-data">
-                                <h:outputLabel value="Avatar: "/>
-                                <h:inputFile value="#{usuario.imgSubir}" class="centrarTabla"  id="iAvatar"></h:inputFile>
-                                <h:commandButton value="Actualizar" action="#{usuario.subirAvatar()}"/>
-                            </h:form>
-                        </c:when>
-                        <c:otherwise>
-                            <h:graphicImage alt="foto de perfil" library="imagenes" value="/resources/imagenes/avatares/#{usuario.avatar}" height="120" width="120"/>
-                        </c:otherwise>
-                    </c:choose>
-                    <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarTabla">
-                        <h:outputLabel value="Nombre: "/><h:outputText value="#{usuario.nombre}"/>
-                        <h:outputLabel value="Apellidos: "/><h:outputText value="#{usuario.apellidos}"/>
-                        <h:outputLabel value="Email: "/><h:outputText value="#{usuario.email}"/>
-                        <h:outputLabel value="Ciudad de residencia: "/><h:outputText value="#{usuario.ciudad.nombre}"/>
-                        <h:outputLabel value="Saldo: "/><h:outputText value="#{usuario.saldo} minutos"/>
-                    </h:panelGrid>
-                </div>
-                <div class="row col-lg-12 centrar hidden" id="promocion">
-                    <h:form>
-                        <h:outputText value="Introduzca el codigo promocional: "/>
-                        <h:inputText value="#{usuario.codigoProm}"/>
-                        <h:commandButton value="Enviar" action="#{usuario.comprobarCodigo()}"/>
-                    </h:form>
-                </div>
-                <div class="row col-lg-12 centrar">
-                    <button id="botonDatos" class="btn btn-primary">Datos personales</button>
-                    <h:link class="btn btn-primary" value="Mis Ofertas" outcome="/paginas/gestionOfertas/principal.xhtml"/> 
-                    <button id="botonPromo" class="btn btn-primary">Introducir codigo promocional</button>
-                    <!--<h:button id="botonDatos" class="btn btn-primary" value="Datos Personales"/>
-                    <h:button id="botonOferta" class="btn btn-primary" value="Crear Oferta"/>-->
-                </div>
+                <h3 class="centrar colorAzulOscuro">#{usuario.mensaje}</h3>
+                <c:if test="#{usuario.estado eq 'r'}">
+                    <div class="row col-lg-12 centrar hidden" id="datos">
+                        <c:choose>
+                            <c:when test="#{usuario.avatar==null}">
+                                <h:form enctype="multipart/form-data">
+                                    <h:outputLabel value="Avatar: "/>
+                                    <h:inputFile value="#{usuario.imgSubir}" class="centrarTabla"  id="iAvatar"></h:inputFile>
+                                    <h:commandButton value="Actualizar" action="#{usuario.subirAvatar()}"/>
+                                </h:form>
+                            </c:when>
+                            <c:otherwise>
+                                <h:graphicImage alt="foto de perfil" library="imagenes" value="/resources/imagenes/avatares/#{usuario.avatar}" height="120" width="120"/>
+                            </c:otherwise>
+                        </c:choose>
+                        <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarTabla">
+                            <h:outputLabel value="Nombre: "/><h:outputText value="#{usuario.nombre}"/>
+                            <h:outputLabel value="Apellidos: "/><h:outputText value="#{usuario.apellidos}"/>
+                            <h:outputLabel value="Email: "/><h:outputText value="#{usuario.email}"/>
+                            <h:outputLabel value="Ciudad de residencia: "/><h:outputText value="#{usuario.ciudad.nombre}"/>
+                            <h:outputLabel value="Saldo: "/><h:outputText value="#{usuario.saldo} minutos"/>
+                        </h:panelGrid>
+                    </div>
+                    <div class="row col-lg-12 centrar hidden" id="promocion">
+                        <h:form>
+                            <h:outputText value="Introduzca el codigo promocional: "/>
+                            <h:inputText value="#{usuario.codigoProm}"/>
+                            <h:commandButton value="Enviar" action="#{usuario.comprobarCodigo()}"/>
+                        </h:form>
+                    </div>
+                    <div class="row col-lg-12 centrar">
+                        <button id="botonDatos" class="btn btn-primary">Datos personales</button>
+                        <h:link class="btn btn-primary" value="Mis Ofertas" outcome="/paginas/gestionOfertas/principal.xhtml"/> 
+                        <button id="botonPromo" class="btn btn-primary">Introducir codigo promocional</button>
+                    </div>
+
+                </c:if>
+                <c:if test="#{usuario.estado eq 'e'}">
+                    <h3 class="colorAzul centrar">Su ciudad sugerida aun esta a la espera de aprobacion.<br/>
+                        podra acceder a su perfil de usuario cuando haya sido aprobada</h3>
+                </c:if>
                 <div class="row col-lg-12 centrar">
                     <br/>
                     <h:form>

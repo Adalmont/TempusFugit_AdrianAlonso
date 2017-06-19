@@ -50,7 +50,7 @@
                                         <h:outputLabel value="Coste: "/>
                                         <h:outputText value="#{horarioActual.horaFin - horarioActual.horaInicio} minutos"/>
                                     </h:panelGrid>
-                                    <c:if test="#{usuario.idUsuario!=oferta.usuario.idUsuario and !usuario.tipo eq 'a'}">
+                                    <c:if test="#{usuario.idUsuario!=oferta.usuario.idUsuario and usuario.tipo eq 'n'}">
                                         <c:choose>
                                             <c:when test="#{usuario.saldo>=(horarioActual.horaFin-horarioActual.horaInicio)}">
                                                 <h:commandButton class="btn btn-primary" value="Contratar Horario" action="#{servicio.addServicio(horarioActual, usuario)}"/>

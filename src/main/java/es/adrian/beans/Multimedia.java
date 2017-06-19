@@ -15,8 +15,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 /**
- *
+ * Clase para controlar todo lo relacionado con la multimedia de la aplicacion
  * @author Adrian
+ * @version final
+ * @since 1.8
  */
 @Entity
 @Table(name="multimedia")

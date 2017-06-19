@@ -33,7 +33,7 @@
                             <h:outputText value="desde #{ofertaActual.fechaInicio} hasta #{ofertaActual.fechaFin}"/><br/>
                             <h:outputText value="#{ofertaActual.subcategoria.categoria.nombre}: #{ofertaActual.subcategoria.nombre}"/><br/>
                         </h:panelGrid>
-                        <c:if test="#{usuario.tipo eq 'a' or usuario.idUsuario!=0 and usuario.idUsuario!=null}">
+                        <c:if test="#{usuario.estado eq 'r' and usuario.tipo eq 'a' or usuario.idUsuario!=0 and usuario.idUsuario!=null}">
                             <h:commandButton class="centrarTabla" value="Seleccionar" action="#{oferta.elegirOferta(ofertaActual)}"/>
                         </c:if>
                     </h:form>

@@ -19,12 +19,10 @@
 
         <ui:composition template="/resources/plantilla/plantilla.xhtml">
             <ui:define name="contenido">
-                <f:event type="preRenderView" listener="#{ciudad.limpiarDatos()}"/>
-                <h1 class="centrar colorAzulOscuro">Introduzca una nueva ciudad</h1><br/>
+                <f:event type="preRenderView" listener="#{ciudad.getCiudad()}"/>
                 <p class="centrar colorAzul">Seleccione el nombre de la ciudad para obtener sus coordenadas<br/>
                     Si las coordenadas obtenidas le resultan extrañas, utilice un nombre mas especifico (Por ejemplo <br/>
-                    "Mérida, Badajoz" en vez de "Mérida"</p>
-                <p class="centrar colorAzul">#{ciudad.mensaje}</p>
+                "Mérida, Badajoz" en vez de "Mérida"</p>
                 <h:form class="centrar">
                     <div class="col-lg-12 centrar">
                         <h:panelGrid columns="2" border="0" cellspacing="2" class="centrarTabla">
@@ -37,12 +35,25 @@
                             <h:inputText styleClass="lat hidden" value="#{ciudad.latitud}"/>
                             <h:inputText styleClass="lon hidden" value="#{ciudad.longitud}"/>
                         </h:panelGrid>
-                        <h:commandButton class="btn btn-primary" value="Aceptar" action="#{ciudad.addCiudad()}"/>
+                        <h:commandButton class="btn btn-primary" value="Aceptar" action="#{ciudad.updateCiudad()}"/>
+                        <h:commandButton class="btn btn-primary" value="Rechazar" action="#{ciudad.deleteCiudad()}"/>
                         <h:link class="btn btn-primary" value="Volver" outcome="/paginas/administracion/panelAdministrador.xhtml"/>
                     </div>
                 </h:form>
                 <script>
 
+                    $(".ciudad").select(function () {
+                        var city = $(this).val();
+                        $.getJSON("https://maps.googleapis.com/maps/api/geocode/json?address=" + encodeURIComponent(city), function (val) {
+                            if (val.results.length) {
+                                var location = val.results[0].geometry.location;
+                                $(".lat").val(location.lat);
+                                $(".lon").val(location.lng);
+                                $(".lati").val(location.lat);
+                                $(".long").val(location.lng);
+                            }
+                        });
+                    });
                     $(".ciudad").keyup(function () {
                         var city = $(this).val();
                         $.getJSON("https://maps.googleapis.com/maps/api/geocode/json?address=" + encodeURIComponent(city), function (val) {
@@ -60,3 +71,4 @@
         </ui:composition>
     </h:body>
 </html>
+

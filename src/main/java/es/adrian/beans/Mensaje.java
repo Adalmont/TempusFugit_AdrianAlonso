@@ -19,8 +19,11 @@ import javax.persistence.*;
 import org.hibernate.HibernateException;
 
 /**
- *
+ * Clase para controlar todo lo relacionado con los mensajes de 
+ * la aplicacion
  * @author Adrian
+ * @version final
+ * @since 1.8
  */
 @Entity
 @Table(name = "mensajes")
@@ -98,6 +101,13 @@ public class Mensaje implements Serializable {
         this.leido = leido;
     }
 
+    /**
+     * Metodo para crear un mensaje nuevo en la base
+     * de datos
+     * @param usuario emisor del mensaje
+     * @return true si se crea sin problemas, false si se produce un
+     *         error de hibernate
+     */
     public String addMensaje(Usuario usuario) {
         String exito = null;
         try {
@@ -119,6 +129,11 @@ public class Mensaje implements Serializable {
         return exito;
     }
 
+    /**
+     * metodo para borrar un mensaje de la base de datos
+     * @return true si se elimina sin problemas, false si se produce un
+     *         error de hibernate
+     */
     public String deleteMensaje() {
         String exito = null;
         try {
@@ -136,6 +151,11 @@ public class Mensaje implements Serializable {
         return exito;
     }
 
+    /**
+     * Metodo para obtener una lista de los mensajes de una oferta
+     * @param idOferta la oferta de la que se quieren obtener los mensajes
+     * @return lista de mensajes de la oferta
+     */
     public ArrayList<Mensaje> getMensajes(int idOferta) {
         ArrayList<Mensaje> listaMensajes = new ArrayList();
         try {
@@ -152,6 +172,9 @@ public class Mensaje implements Serializable {
         return listaMensajes;
     }
 
+    /**
+     * metodo para reiniciar los parametros del bean
+     */
     public void limpiarDatos() {
         this.asunto = null;
         this.contenido = null;

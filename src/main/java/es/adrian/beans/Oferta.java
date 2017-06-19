@@ -30,8 +30,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.hibernate.HibernateException;
 
 /**
- *
+ * Clase para controlar todo lo relacionado con las ofertas
+ * de la aplicacion
  * @author Adrian
+ * @version final
+ * @since 1.8
  */
 @Entity
 @Table(name = "ofertas")
@@ -190,6 +193,11 @@ public class Oferta implements Serializable {
         this.opcion = opcion;
     }
 
+    /**
+     * metodo que devuelve una lista con todas las ofertas, o todas
+     * las ofertas pertenecientes a una subcategoria
+     * @return lista de ofertas
+     */
     public ArrayList<Oferta> getOfertas() {
         ArrayList<Oferta> listaOfertas = new ArrayList();
         try {
@@ -206,6 +214,11 @@ public class Oferta implements Serializable {
         return listaOfertas;
     }
 
+    /**
+     * Metodo para crear una nueva oferta en la base de datos
+     * @return true si se crea correctamente, false si se produce un erro de hibernate
+     * @throws IOException 
+     */
     public String addOferta() throws IOException {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -226,50 +239,48 @@ public class Oferta implements Serializable {
         }
     }
 
+    /**
+     * Metodo para crear una oferta, que llama a addOferta() para añadirla a la base de datos 
+     * y despues crea todos los horarios necesarios para la oferta
+     * @return true si la oferta se crea sin problemas, false si se superan las 10
+     * horas de trabajo o se produce un error de hibernate
+     * @throws IOException 
+     */
     public String crearOferta() throws IOException {
         String resultado = null;
-        if (this.opcion != null) {
-            addOferta();
-            System.out.println("HORA AL CREAR: " + this.horaInicio + " " + this.horaFin);
-            System.out.println("FECHA AL CREAR: " + this.fechaFin + " " + this.fechaInicio);
-        } else {
-            return "false";
-        }
-        if (this.opcion.equals("unica")) {
-            if (this.horaFin - this.horaInicio > 480) {
-                resultado = "false";
-                this.mensaje = "No se pueden superar las 8 horas de trabajo";
-                deleteOferta();
-            } else {
-                ArrayList<LocalDate> fechas = new ArrayList();
-                LocalDate inicio = this.fechaInicio.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                while (!inicio.isAfter(this.fechaFin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())) {
-                    fechas.add(inicio);
-                    inicio = inicio.plusDays(1);
-                }
-                for (LocalDate fechaActual : fechas) {
-                    Horario horario = new Horario();
-                    horario.setFecha(java.sql.Date.valueOf(fechaActual));
-                    horario.setHoraInicio(this.horaInicio);
-                    horario.setHoraFin(this.horaFin);
-                    horario.setOferta(this);
-                    horario.addHorario();
-                    System.out.println("HORARIO AL CREAR: " + this.horaInicio + " " + this.horaFin + "\\\\" + horario.getHoraInicio() + " " + horario.getHoraFin());
-                }
-                limpiarDatos();
-                resultado = "creada";
-            }
-        }
-        if (this.opcion.equals("multiple")) {
+        addOferta();
+        if (this.horaFin - this.horaInicio > 480) {
             resultado = "false";
+            this.mensaje = "No se pueden superar las 8 horas de trabajo";
             deleteOferta();
+        } else {
+            ArrayList<LocalDate> fechas = new ArrayList();
+            LocalDate inicio = this.fechaInicio.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            while (!inicio.isAfter(this.fechaFin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())) {
+                fechas.add(inicio);
+                inicio = inicio.plusDays(1);
+            }
+            for (LocalDate fechaActual : fechas) {
+                Horario horario = new Horario();
+                horario.setFecha(java.sql.Date.valueOf(fechaActual));
+                horario.setHoraInicio(this.horaInicio);
+                horario.setHoraFin(this.horaFin);
+                horario.setOferta(this);
+                horario.addHorario();
+            }
+            limpiarDatos();
+            resultado = "creada";
         }
 
         return resultado;
     }
 
-    /*Este metodo recibe los datos de una oferta en la lista de ofertas y la pasa al bean para mostrarla en la pagina de
-    la oferta individual*/
+    /**
+     * Metodo para guardar una oferta elegida en una lista en un atributo
+     * de jsf
+     * @param ofertaElegida objeto Oferta que se desea guardar
+     * @return true si la oferta elegida no es nula, false en caso contrario
+     */
     public String elegirOferta(Oferta ofertaElegida) {
         if (ofertaElegida != null) {
             this.idOferta = ofertaElegida.idOferta;
@@ -288,6 +299,9 @@ public class Oferta implements Serializable {
         }
     }
 
+    /**
+     * metodo para reiniciar los parametros del bean
+     */
     public void limpiarDatos() {
         this.idOferta = 0;
         this.descripcion = null;
@@ -302,6 +316,9 @@ public class Oferta implements Serializable {
         this.imgPrincipal = null;
     }
 
+    /**
+     * metodo para borrar una oferta de la base de datos
+     */
     public void deleteOferta() {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -312,6 +329,10 @@ public class Oferta implements Serializable {
         }
     }
 
+    /**
+     * metodo para actualizar una oferta de la base de datos
+     * @return true si se actualiza correctamente, false en caso contrario
+     */
     public String updateOferta() {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -325,22 +346,39 @@ public class Oferta implements Serializable {
         }
     }
 
+    /**
+     * Metodo para que el administrador apruebe o rechace una oferta
+     * @param aprobar cadena que indica la accion a realizar
+     * @return borrada si la oferta se ha borrado, aprobada si se ha aprobado
+     */
     public String aprobarOferta(String aprobar) {
-        if(!aprobar.equals("aprobada")){
+        if (!aprobar.equals("aprobada")) {
             deleteOferta();
             return "borrada";
-        }else{
-            this.estado="a";
+        } else {
+            this.estado = "a";
             updateOferta();
             return "aprobada";
         }
     }
 
+    /**
+     * Metodo que sube una imagen y actualiza la oferta
+     * @throws IOException 
+     */
     public void subirImagenPrincipal() throws IOException {
         setImgPrincipal(subirImagen("ofertas", this.imgSubir, String.valueOf(this.idOferta)));
         updateOferta();
     }
 
+    /**
+     * Metodo que sube una imagen al proyecto
+     * @param carpeta carpeta en la que se desea guardar la imagen
+     * @param archivo archivo que se desea guardar
+     * @param nombre nombre del archivo que se guardara
+     * @return  nombre del archivo creado
+     * @throws IOException 
+     */
     static String subirImagen(String carpeta, Part archivo, String nombre) throws IOException {
         String filename = FilenameUtils.getBaseName(nombre);
         String extension = FilenameUtils.getExtension(".jpg");

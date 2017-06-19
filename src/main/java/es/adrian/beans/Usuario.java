@@ -35,8 +35,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.hibernate.HibernateException;
 
 /**
- *
+ * Clase que controla todo lo relacionado con los usuarios de la aplicacion
+ * 
  * @author Adrian
+ * @version final
+ * @since 1.8
  */
 @Entity
 @Table(name = "Usuarios")
@@ -58,6 +61,7 @@ public class Usuario implements Serializable {
     private int saldo;
     private String tipo;
     private String avatar;
+    private String estado;
     @Transient
     private String mensaje;
     @Transient
@@ -70,6 +74,10 @@ public class Usuario implements Serializable {
     private int numeroSolicitudes;
     @Transient
     private int saldoExtra;
+    @Transient
+    private String nuevaCiudad;
+    @Transient
+    private int numeroCiudadesPendientes;
 
     public int getIdUsuario() {
         return idUsuario;
@@ -143,6 +151,14 @@ public class Usuario implements Serializable {
         this.avatar = avatar;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
     public String getMensaje() {
         return mensaje;
     }
@@ -191,6 +207,25 @@ public class Usuario implements Serializable {
         this.saldoExtra = saldoExtra;
     }
 
+    public String getNuevaCiudad() {
+        return nuevaCiudad;
+    }
+
+    public void setNuevaCiudad(String nuevaCiudad) {
+        this.nuevaCiudad = nuevaCiudad;
+    }
+
+    public int getNumeroCiudadesPendientes() {
+        return numeroCiudadesPendientes;
+    }
+
+    public void setNumeroCiudadesPendientes(int numeroCiudadesPendientes) {
+        this.numeroCiudadesPendientes = numeroCiudadesPendientes;
+    }
+
+    /**
+     * Metodo para reiniciar los parametros del bean
+     */
     public void limpiarDatos() {
         this.nombre = null;
         this.apellidos = null;
@@ -203,14 +238,26 @@ public class Usuario implements Serializable {
         this.tipo = null;
         this.mensaje = null;
         this.imgSubir = null;
+        this.estado = null;
+        this.nuevaCiudad = null;
     }
 
+    /**
+     * Metodo que reinicia los datos del usuario y devuelve una cadena para la navegacion de jsf
+     * @return true
+     */
     public String logOut() {
         limpiarDatos();
         return "true";
     }
 
-    /*Este metodo añade usuarios a la base de datos. si no se ha seleccionado ninguna ciudad, asigna una por defecto */
+    /**
+     * metodo para crear un nuevo usuario en la base de datos
+     * 
+     * @return true si se crea correctamente, false si no se ha elegido ciudad, la comprobacion de contraseñas falla
+     * o se produce un error
+     * @throws Exception 
+     */
     public String addUsuario() throws Exception {
         String exito = null;
         if (this.clave.equals(this.confirmarClave)) {
@@ -224,12 +271,21 @@ public class Usuario implements Serializable {
                     IGenericoDAO gdao = daof.getGenericoDAO();
                     this.tipo = "n";
                     this.clave = encriptarMD5(this.clave);
+                    if (this.ciudad.getIdCiudad() == 2) {
+                        this.estado = "e";
+                    } else {
+                        this.estado = "r";
+                    }
                     gdao.add(this);
                     logUsuario();
                     if (this.imgSubir != null) {
                         subirAvatar();
                     }
-                    exito = "true";
+                    if (this.ciudad.getIdCiudad() == 2) {
+                        exito = "nuevaCiudad";
+                    } else {
+                        exito = "true";
+                    }
                 }
             } catch (HibernateException | NullPointerException e) {
                 exito = "false";
@@ -245,6 +301,11 @@ public class Usuario implements Serializable {
         return exito;
     }
 
+    /**
+     * Metodo para logear a un usuario en la aplicacion
+     * @return true si no se produce ningun error, false si los datos no coinciden o se produce un error
+     * @throws Exception 
+     */
     public String logUsuario() throws Exception {
         String resultado;
         DAOFactory daof = DAOFactory.getDAOFactory();
@@ -265,6 +326,7 @@ public class Usuario implements Serializable {
                 this.saldo = user.get(0).saldo;
                 this.tipo = user.get(0).tipo;
                 this.clave = user.get(0).clave;
+                this.estado = user.get(0).estado;
                 this.confirmarClave = null;
                 this.mensaje = null;
                 resultado = "true";
@@ -281,6 +343,11 @@ public class Usuario implements Serializable {
         return resultado;
     }
 
+    /**
+     * Metodo para actualizar a un usuario en la base de datos
+     * @return true si se actualiza correctamente, false si se produce un error
+     * @throws Exception 
+     */
     public String updateUsuario() throws Exception {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -295,6 +362,10 @@ public class Usuario implements Serializable {
         }
     }
 
+    /**
+     * metodo para obtener la lista de usuarios de la aplicacion excepto administradores
+     * @return lista de usuarios
+     */
     public ArrayList<Usuario> getUsuarios() {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -307,6 +378,13 @@ public class Usuario implements Serializable {
         }
     }
 
+    /**
+     * metodo para bloquear/desbloquear usuarios
+     * @param usuario usuario a bloquear/desbloquear
+     * @param bloquear operacion a realizar (bloquear/desbloquear)
+     * @return true si se realiza la operacion sin errores, false si se produce alguno
+     * @throws Exception 
+     */
     public String bloquearUsuario(Usuario usuario, String bloquear) throws Exception {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -326,6 +404,36 @@ public class Usuario implements Serializable {
         }
     }
 
+    /**
+     * metodo para que se guarde una ciudad sugerida por un usuario a la espera de aprobacion por el administrador
+     * @return true si se guarda correctamente, false si se producen errores
+     * @throws Exception 
+     */
+    public String crearCiudad() throws Exception {
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            Ciudad ciudadNueva = new Ciudad();
+            ciudadNueva.setNombre(this.nuevaCiudad);
+            ciudadNueva.setEstado("p");
+            ciudadNueva.setLatitud(0);
+            ciudadNueva.setLongitud(0);
+            gdao.add(ciudadNueva);
+            this.ciudad = ciudadNueva;
+            updateUsuario();
+            this.mensaje = "Su ciudad ha sido enviada y esta a la espera de aprobacion";
+            return "true";
+        } catch (HibernateException he) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
+            return "false";
+        }
+    }
+
+    /**
+     * Metodo para comprobar codigos promocionales y incrementar el saldo del usuario
+     * @return true si se introduce un codigo correcto, false si es incorrecto o se producen errores
+     * @throws Exception 
+     */
     public String comprobarCodigo() throws Exception {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -349,11 +457,24 @@ public class Usuario implements Serializable {
         }
     }
 
+    /**
+     * Metodo para cambiar el avatar del usuario
+     * @throws IOException
+     * @throws Exception 
+     */
     public void subirAvatar() throws IOException, Exception {
         setAvatar(subirImagen("avatares", this.imgSubir, String.valueOf(this.idUsuario)));
         updateUsuario();
     }
 
+    /**
+     * metodo para subir una imagen al proyecto
+     * @param carpeta carpeta a la que se desea subir la imagen
+     * @param archivo archivo que se desea guardar
+     * @param nombre nombre que se desea poner a la imagen guardada
+     * @return nombre de la imagen guardada
+     * @throws IOException 
+     */
     static String subirImagen(String carpeta, Part archivo, String nombre) throws IOException {
         String filename = FilenameUtils.getBaseName(nombre);
         String extension = FilenameUtils.getExtension(".jpg");
@@ -369,6 +490,12 @@ public class Usuario implements Serializable {
 
     }
 
+    /**
+     * metodo para encriptar la contraseña del usuario
+     * @param cadena contraseña a encriptar
+     * @return contraseña encriptada
+     * @throws Exception 
+     */
     public static String encriptarMD5(String cadena) throws Exception {
         MessageDigest md = MessageDigest.getInstance("MD5");
         md.update(cadena.getBytes());
@@ -377,6 +504,10 @@ public class Usuario implements Serializable {
         return new String(encoded);
     }
 
+    /**
+     * metodo para obtener una notificacion si se tienen solicitudes pendientes de aprobacion
+     * @return true si se tienen solicitudes pendientes, false si no
+     */
     public boolean solicitudesPendientes() {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -394,6 +525,10 @@ public class Usuario implements Serializable {
         }
     }
 
+    /**
+     * metodo para obtener una notificacion si se tienen ofertas pendientes de aprobacion
+     * @return true si se tienen ofertas pendientes, false si no
+     */
     public boolean ofertasPendientes() {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -411,6 +546,10 @@ public class Usuario implements Serializable {
         }
     }
 
+    /**
+     * metodo para comprobar si se tienen solicitudes contratadas
+     * @return true si se tienen solicitudes contratadas, false si no
+     */
     public boolean contratos() {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -428,6 +567,31 @@ public class Usuario implements Serializable {
         }
     }
 
+    /**
+     * metodo para comprobar si hay ciudades pendientes de aprobacion
+     * @return true si hay ciudades pendientes de aprobacion, false si no
+     */
+    public boolean ciudadesPendientes() {
+        try {
+            DAOFactory daof = DAOFactory.getDAOFactory();
+            IGenericoDAO gdao = daof.getGenericoDAO();
+            ArrayList<Ciudad> listaCiudades = (ArrayList<Ciudad>) gdao.get("Ciudad where estado='p'");
+            if (!listaCiudades.isEmpty()) {
+                this.numeroCiudadesPendientes = listaCiudades.size();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (HibernateException he) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, he);
+            return false;
+        }
+    }
+
+    /**
+     * metodo para comprobar si hay solicitudes ofrecidas y sin finalizar
+     * @return true si hay solicitudes sin finalizar, false si no
+     */
     public boolean ofertas() {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -443,4 +607,5 @@ public class Usuario implements Serializable {
             return false;
         }
     }
+
 }

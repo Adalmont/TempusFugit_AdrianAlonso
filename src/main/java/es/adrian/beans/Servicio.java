@@ -30,8 +30,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.hibernate.HibernateException;
 
 /**
- *
+ * Clase que controla todo lo relacionado con los servicios de la aplicacion
  * @author Adrian
+ * @version final
+ * @since 1.8
  */
 @Entity
 @Table(name = "servicios")
@@ -122,6 +124,9 @@ public class Servicio implements Serializable {
         this.creador = creador;
     }
 
+    /**
+     * metodo para reiniciar los parametros del bean
+     */
     public void limpiarDatos() {
         this.comentario = null;
         this.estado = null;
@@ -132,6 +137,13 @@ public class Servicio implements Serializable {
         this.usuario = null;
     }
 
+    /**
+     * metodo para crear un nuevo servicio en la base de datos
+     * @param horario horario que corresponde al servicio
+     * @param usuario usuario solicitante del servicio
+     * @return true si se crea correctamente, false si se produce un error
+     * @throws Exception 
+     */
     public String addServicio(Horario horario, Usuario usuario) throws Exception {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -162,6 +174,12 @@ public class Servicio implements Serializable {
         }
     }
 
+    /**
+     * Metodo para obtener una lista de todos los servicios de la aplicacion
+     * @param idUsuario usuario creador de la oferta a la que pertenece el servicio
+     * @param condicion condicion extra para filtrar los resultados (que la oferta este finalizada, solicitada, aprobada, etc)
+     * @return lista de servicios
+     */
     public ArrayList<Servicio> getServicios(int idUsuario, String condicion) {
         ArrayList<Servicio> listaServicios = new ArrayList();
         try {
@@ -174,6 +192,11 @@ public class Servicio implements Serializable {
         return listaServicios;
     }
 
+    /**
+     * metodo para obtener una lista de todos los servicios contratados por un usuario
+     * @param idUsuario usuario que contrata los servicios
+     * @return lista de servicios contratados
+     */
     public ArrayList<Servicio> getServiciosContratados(int idUsuario) {
         ArrayList<Servicio> listaServicios = new ArrayList();
         try {
@@ -186,6 +209,11 @@ public class Servicio implements Serializable {
         return listaServicios;
     }
 
+    /**
+     * metodo para actualizar un servicio en la base de datos
+     * @param nuevoEstado nuevo estado del servicio
+     * @return true si se actualiza correctamente, false si se produce un error
+     */
     public String actualizarServicio(String nuevoEstado) {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -203,6 +231,11 @@ public class Servicio implements Serializable {
         }
     }
 
+    /**
+     * metodo para rechazar un servicio por parte del creador
+     * @param servicio servicio a rechazar
+     * @return true si no surgen problemas, false si se produce una excepcion
+     */
     public String rechazarServicio(Servicio servicio) {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();

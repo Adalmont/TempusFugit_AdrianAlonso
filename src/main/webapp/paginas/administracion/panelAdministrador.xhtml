@@ -22,13 +22,20 @@
                 <h1 class="centrar colorAzulOscuro">Perfil de Administracion</h1>
                 <div class="row col-lg-12 centrar">
                     <c:if test="#{usuario.ofertasPendientes()==true}">
-                        <p class="colorAzul">Hay #{usuario.numeroSolicitudes} ofertas pendientes de aprobacion</p>
+                        <p class="colorAzul">Hay #{usuario.numeroSolicitudes} oferta/s pendientes de aprobacion</p>
                     </c:if>
+                </div>
+                <div class="row col-lg-12 centrar">
+                    <c:if test="#{usuario.ciudadesPendientes()==true}">
+                        <p class="colorAzul">Hay #{usuario.numeroCiudadesPendientes} ciudad/es pendientes de aprobacion</p>
+                    </c:if>
+
                 </div>
                 <div class="row col-lg-12 centrar">
                     <h:link class="btn btn-primary" value="Lista de Usuarios" outcome="/paginas/administracion/administracionUsuarios.xhtml"/>
                     <h:link class="btn btn-primary" value="Aprobar Ofertas" outcome="/paginas/administracion/ofertasPendientes.xhtml"/>
                     <h:link class="btn btn-primary" value="Añadir Ciudad" outcome="/paginas/administracion/nuevaCiudad.xhtml"/>
+                    <h:link class="btn btn-primary" value="Ciudades por aprobar" outcome="/paginas/administracion/aprobarCiudades.xhtml"/>
                     <h:link class="btn btn-primary" value="Añadir Codigo Promocional" outcome="/paginas/administracion/nuevoCodigo.xhtml"/>
                 </div>
                 <div class="row col-lg-12 centrar">

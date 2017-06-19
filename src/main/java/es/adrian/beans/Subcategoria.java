@@ -27,8 +27,11 @@ import javax.persistence.Transient;
 import org.hibernate.HibernateException;
 
 /**
- *
+ * Clase para controlar todo lo relacionado con las subcategorias de la aplicacion
+ * 
  * @author Adrian
+ * @version final
+ * @since 1.8
  */
 @Entity
 @Table(name = "subcategorias")
@@ -97,7 +100,10 @@ public class Subcategoria implements Serializable {
         this.categoriaElegida = categoriaElegida;
     }
 
-    /*Este metodo devuelve un ArrayList de subcategorias, que utilizo para rellenar un Select en las paginas xhtml*/
+    /**
+     * Metodo para obtener una lista de subcategorias
+     * @return lista de subcategorias
+     */
     public ArrayList<Subcategoria> getSubcat() {
         ArrayList<Subcategoria> listaSubcat = new ArrayList();
         try {
@@ -110,6 +116,9 @@ public class Subcategoria implements Serializable {
         return listaSubcat;
     }
 
+    /**
+     * Metodo para recargar la lista de subcategorias dependiendo de una categoria elegida
+     */
     public void recargarSubcat() {
         try {
             DAOFactory daof = DAOFactory.getDAOFactory();
@@ -120,8 +129,6 @@ public class Subcategoria implements Serializable {
         }
     }
 
-    /*Para que funcionen los convertidores de JSF se necesita que la clase que se quiere convertir disponga de
-    metodos equals y hashcode definidos*/
     @Override
     public boolean equals(Object other) {
         return (other != null && getClass() == other.getClass() && this.idSubcategoria != null)
